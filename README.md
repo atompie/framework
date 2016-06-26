@@ -42,7 +42,7 @@ I could not find framework that would meet the following requirements:
  * Dependency injection should be simple.
  * Framework should understand that it does not matter how the data is provided to 
    the application, whether it is JSON, url param, CLI param or XML it should always 
-   be declared the same way. No need for other configuration for different interfaces.
+   be declared the same way. No need for another configuration for different interfaces.
  * Globals such as request, config, env variables should not be mutable.
  * Session should not be accessible inside the application, only some variables should 
    be declared as stateful and saved into session automatically. 
