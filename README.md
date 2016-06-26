@@ -103,7 +103,7 @@ POSTING to http://your.server/Calculator.divide
 }
 ```
 
-will result as 3 in a json response (STATUS: 200 OK).
+will result as 0.5 in a json response (STATUS: 200 OK).
 
 If you want to be sure that client (e.g. browser) accepts json content annotate 
 method with @Client
@@ -111,7 +111,7 @@ method with @Client
 ```
 class Calculator {
     /**
-     * @Client(ContentType="application/json")
+     * @Client(Accept="application/json")
      * @EndPoint(Method="POST", ContentType="application/json")
      */
     public function divide($number1, $number2) {
@@ -155,7 +155,7 @@ class UserRepositoryProvider
 ```
 
 Now create dependency trait. It describes where the provider should be injected.
-For example CalculatorDependency defines that for method  divide if you add
+For example UserDependency defines that for method load if you add
 parameter UserRepository it will run UserRepositoryProvider that provides
 class UserRepository. Notice that $oConfig if injected by the framework
 as it is a global variable that no provider in the application can deliver without
@@ -163,7 +163,7 @@ referencing the global dependency injection container. This way application is
 still not touching the framework.
 
 ```
-    trait CalculatorDependency
+    trait UserDependency
     {
         public function __dependency()
         {
@@ -171,7 +171,7 @@ still not touching the framework.
             $oProvider = new UserRepositoryProvider();
 
             return [
-                'divide' => [  // Method name
+                'load' => [  // Method name
                     UserRepository::class => // Type hint
                         /**
                          * @singleton
@@ -188,17 +188,16 @@ still not touching the framework.
 Finally apply trait to your application class.
 
 ```
-class Calculator {
+class User {
 
-    use CalculatorDependency
+    use UserDependency
     
     /**
      * @Client(ContentType="application/json")
      * @EndPoint(Method="POST", ContentType="application/json")
      */
-    public function divide($number1, $number2, UserRepository $userRepo) {
+    public function load(UserRepository $userRepo) {
         // TODO use $userRepo here
-        return $number1 / $number2;
     }
 }
 ```
