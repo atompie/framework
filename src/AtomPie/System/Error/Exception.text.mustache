@@ -1,0 +1,10 @@
+Exception type: {{ ExceptionType }}
+Code: {{ Code }}
+Message: {{ ErrorMessage }}
+Line: {{ Line }}
+File: {{ File }}
+Stack:
+{{# StackTrace }}
+	{{ . }}
+{{/StackTrace}}
+InnerException: {{ InternalException }}

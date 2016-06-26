@@ -1,0 +1,11 @@
+src/AtomPie/Boundary:
+  Description: Sprawdza czy interfejsy są abstrakcyjne. Interfejsy mogą być powiązane tylko z innymi interfejsami
+  Allow:
+    - Generi.Boundary # package
+    - AtomPie.Boundary
+    - AtomPie.Web.Boundary
+    - AtomPie.View.Boundary # package
+    - AtomPie.DependencyInjection.Boundary # package
+    - ArrayAccess
+    - Closure
+    - Exception

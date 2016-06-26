@@ -1,0 +1,8 @@
+src/AtomPie/Html/Boundary:
+  Allow:
+    - AtomPie.Html.Boundary #slef
+    - Generi
+    - parent
+    - Iterator
+    - Closure
+    - ArrayAccess

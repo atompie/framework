@@ -1,0 +1,6 @@
+src/AtomPie/I18n:
+  Allow:
+    - Generi #package
+    - AtomPie.I18n # self
+    - parent
+    - Exception

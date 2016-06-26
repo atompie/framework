@@ -1,0 +1,7 @@
+{
+"value1": "{{ value1 }}",
+{{# value2 }}
+	"value2": "{{ . }}",
+{{/ value2 }}
+"value3": "{{ value3.a }}{{value3.b}}{{value3.c.x}}{{value3.c.z}}"
+}

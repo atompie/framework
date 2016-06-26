@@ -1,0 +1,22 @@
+src/Workshop:
+  Description: Oddziel Dispatcher od Component. Dispatcher będzie w stanie działać bez Component ale Component bez Dispatchera już nie.
+  Allow:
+    - Exception
+    - parent
+    - ReflectionParameter
+    - ReflectionMethod
+    - ReflectionObject
+    - ReflectionFunctionAbstract
+    - SimpleXMLElement
+    - ReflectionFunction
+    - static
+    - Workshop
+    - AtomPie.Boundary
+    - Generi # Package
+    - AtomPie.Annotation # Package
+    - AtomPie.EventBus # Package
+    - AtomPie.DependencyInjection #Package
+    - Composer # Package
+    - Mustache_Engine #Package
+  FlipReport: No
+

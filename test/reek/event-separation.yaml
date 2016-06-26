@@ -1,0 +1,4 @@
+src:
+  Deny:
+    - Workshop.Application.Event
+  WithNamespaces: Yes

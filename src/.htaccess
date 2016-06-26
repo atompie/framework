@@ -1,0 +1,21 @@
+Options +FollowSymlinks
+
+RewriteEngine On
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# Explicitly disable rewriting for front controllers
+RewriteRule ^/index.php - [L]
+
+# Allow any files or directories that exist to be displayed directly
+RewriteCond %{REQUEST_URI} ^.+$
+RewriteCond %{REQUEST_FILENAME} \.(gif|jpe?g|png|js|css|swf|ico|txt|pdf|xml)$ [OR]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^ - [L]
+
+# Top nodes
+RewriteRule ^(.*)\{(.*)\}$ index.php?__end_point=$1&__event=$2 [QSA,L]
+RewriteRule ^(.*)$ index.php?__end_point=$1 [QSA,L]

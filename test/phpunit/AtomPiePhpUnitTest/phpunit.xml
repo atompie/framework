@@ -1,0 +1,68 @@
+<phpunit
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="MainSuite">
+
+            <file>Annotation/AnnotationParserTest.php</file>
+
+            <file>Core/ConfigTest.php</file>
+            <file>Core/FrameworkConfigTest.php</file>
+            <file>Core/EndPointUrlTest.php</file>
+            <file>Core/EndPointImmutableTest.php</file>
+            <file>Core/EventSpecTest.php</file>
+
+            <file>DependencyInjection/DependencyContainerTest.php</file>
+            <file>DependencyInjection/DependencyInjectorTest.php</file>
+
+            <!--<file>System/FileUploadTest.php</file>-->
+            <file>System/InitTest.php</file>
+            <file>System/KernelTest.php</file>
+            <file>System/NamespaceValueTest.php</file>
+            <file>System/IO/FileTest.php</file>
+
+            <file>Gui/EndPointUrlTest.php</file>
+            <file>Gui/TemplateAnnotationTest.php</file>
+
+            <file>TemplateAnnotationTest.php</file>
+            <file>TemplatePlaceHolderTest.php</file>
+
+            <file>View/TwigLikeViewTest.php</file>
+
+            <file>Event/EventHandlerTraitTest.php</file>
+
+            <file>I18n/LabelTest.php</file>
+
+            <file>Web/CookieJarFactoryTest.php</file>
+            <file>Web/CookieTest.php</file>
+            <file>Web/ParamConverterTest.php</file>
+            <file>Web/ImmutableRequestTest.php</file>
+            <file>Web/ResponseTest.php</file>
+            <file>Web/RequestTest.php</file>
+            <file>Web/ParamTest.php</file>
+            <file>Web/ServerTest.php</file>
+            <file>Web/SessionTest.php</file>
+            <file>Web/AcceptHeaderMediaTypeArrayTest.php</file>
+            <file>Web/AcceptHeaderTest.php</file>
+            <file>Web/ContentTypeHeaderTest.php</file>
+            <file>Web/UrlTest.php</file>
+            <file>Web/EnvironmentTest.php</file>
+            <file>Web/StatusTest.php</file>
+            <file>Web/CookieJarTest.php</file>
+            <file>Web/HeaderTest.php</file>
+
+            <file>Html/HtmlHeaderTest.php</file>
+            <file>Html/HtmlAttributeTest.php</file>
+            <file>Html/HtmlAttributesTest.php</file>
+            <file>Html/HtmlTableTest.php</file>
+            <file>Html/HtmlElementNodeTest.php</file>
+            <file>Html/TagTest.php</file>
+            <file>Html/PageBottomTest.php</file>
+
+
+        </testsuite>
+    </testsuites>
+</phpunit>

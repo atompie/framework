@@ -1,0 +1,5 @@
+src/AtomPie/Boundary/Core/EventBus:
+  Allow:
+    - AtomPie.DependencyInjection.Boundary #package
+    - AtomPie.Boundary.Core.EventBus #self
+    - Closure

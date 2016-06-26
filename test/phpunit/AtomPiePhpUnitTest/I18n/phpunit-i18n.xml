@@ -1,0 +1,14 @@
+<phpunit
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="MainSuite">
+
+            <file>LabelTest.php</file>
+
+        </testsuite>
+    </testsuites>
+</phpunit>

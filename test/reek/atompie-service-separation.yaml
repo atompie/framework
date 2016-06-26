@@ -1,0 +1,19 @@
+src/AtomPie/Service:
+  Allow:
+    - AtomPie.Service #self
+    - Generi #Package
+    - Workshop.Web #Package
+    - Workshop.I18n #Package
+    - AtomPie.DependencyInjection #Package
+    - AtomPie.Annotation #Package
+    - Workshop.Html #Package
+    - ReflectionObject
+    - Exception
+    - ReflectionParameter
+    - ReflectionClass
+    - ReflectionFunction
+    - ReflectionFunctionAbstract
+    - parent
+
+
+

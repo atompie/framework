@@ -1,0 +1,6 @@
+src/AtomPie/Boundary/Core:
+  Description: Sprawdza czy interfejs Core nie ma dostępu do innych interfejsów
+  Allow:
+    - AtomPie.Boundary.Core
+    - Generi.Boundary
+    - AtomPie.Web.Boundary

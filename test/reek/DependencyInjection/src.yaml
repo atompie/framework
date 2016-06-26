@@ -1,0 +1,10 @@
+src/AtomPie/DependencyInjection:
+  Allow:
+    - AtomPie.DependencyInjection # self
+    - AtomPie.I18n #package
+    - Generi #package
+    - ReflectionParameter
+    - ReflectionFunctionAbstract
+    - ReflectionFunction
+    - ReflectionClass
+    - Closure

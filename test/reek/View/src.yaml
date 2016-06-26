@@ -1,0 +1,6 @@
+src/AtomPie/View:
+  Allow:
+    - Generi #package
+    - AtomPie.System.IO #package
+    - AtomPie.I18n #package
+    - AtomPie.View #self

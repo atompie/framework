@@ -1,0 +1,50 @@
+{
+  "name": "ri100/workshop",
+  "description": "Workshop for PHP. Framework for business apps.",
+  "minimum-stability": "dev",
+  "license": "LGPL",
+  "authors": [
+    {
+      "name": "RKO",
+      "email": "ri10073@gmail.com"
+    }
+  ],
+  "config": {
+    "cache-files-ttl": 0,
+    "secure-http": false
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.ri100.linuxpl.info"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-session": "*",
+    "ri100/generi": "dev-master",
+    "mustache/mustache": "~2.5",
+    "baryshev/tree-route": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.4.0@stable",
+    "behat/behat": "3.0.15@stable",
+    "mockery/mockery": "0.9.4@stable"
+  },
+  "autoload": {
+    "psr-0": {
+      "Workshop": "src",
+      "AtomPie": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "WorkshopTest": "test/unit",
+      "AtomPiePhpUnitTest": "test/phpunit",
+      "AtomPieTest": "test/phpunit"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+build_settings:
+    ignore:
+        - "vendor"
+        - "test"
+
+setup:
+    composer:
+        action: "install"
+        prefer_dist: true
+
+test:
+    php_unit:
+        arg: "--bootstrap vendor/autoload.php  --configuration test/unit/WorkshopTest/phpunit.xml"
+    php_mess_detector:
+        path: 'src'
+        ignore:
+          - 'vendor'
+          - 'test'
+        allow_failures: true
+    php_code_sniffer:
+        path: "src"
+        tab_width: 5
+        standard: "PSR2"
+    php_cpd:
+        path: 'src'
+        allow_failures: true

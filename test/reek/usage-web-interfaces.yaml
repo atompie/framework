@@ -1,0 +1,6 @@
+src:
+  Deny:
+    - AtomPie.Web.Boundary
+  FlipReport: Yes
+
+

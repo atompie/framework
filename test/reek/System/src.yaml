@@ -1,0 +1,20 @@
+src/AtomPie/System:
+  Allow:
+    - AtomPie.System #self
+    - Generi #package
+    - AtomPie.Web #package
+    - AtomPie.I18n #package
+    - AtomPie.EventBus #package
+    - AtomPie.DependencyInjection #package
+    - AtomPie.Core #package
+    - AtomPie.Boundary #package
+    - AtomPie.Annotation #package
+    - Mustache_Engine #package
+    - Imagick
+    - stdClass
+    - SimpleXMLElement
+    - ReflectionMethod
+    - Iterator
+    - Composer
+    - Exception
+

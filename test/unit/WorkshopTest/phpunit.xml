@@ -1,0 +1,51 @@
+<phpunit
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="MainSuite">
+
+            <file>EndPoint/EndPointSpecTest.php</file>
+            <file>EndPoint/DispatchManifestTest.php</file>
+            <file>EndPoint/DispatcherTest.php</file>
+
+            <file>Url/EndPointUrlTest.php</file>
+            <file>AppTest.php</file>
+            <file>BootstrapTest.php</file>
+            <file>EnvironmentTest.php</file>
+            <file>PlaceHolderTest.php</file>
+            <file>UseCaseApiTest.php</file>
+            <file>AnnotationHandlerTest.php</file>
+            <file>DispatcherTest.php</file>
+            <file>DispatchManifestTest.php</file>
+            <file>KernelTest.php</file>
+            <file>DependantEventTest.php</file>
+            <file>ClassLoaderTest.php</file>
+            <file>ComponentMethodParamTest.php</file>
+            <file>DeEncapsulatorTest.php</file>
+            <file>DocumentTest.php</file>
+            <file>DomainObjectTest.php</file>
+            <file>EventDispatcherTest.php</file>
+            <file>DispatchMessageConverterTest.php</file>
+            <file>GatewayKeeperTest.php</file>
+            <file>HtmlElementNodeInViewTest.php</file>
+            <file>SelectTest.php</file>
+            <file>EventUrlTest.php</file>
+            <file>ClassAnnotationsTest.php</file>
+            <file>EventSpecTest.php</file>
+            <file>ExceptionHandlerTest.php</file>
+            <file>NamespaceHandlerTest.php</file>
+            <file>ComponentParamTest.php</file>
+            <file>StatePersisterTest.php</file>
+            <file>PageTest.php</file>
+            <file>ComponentTemplateTest.php</file>
+            <file>ComponentTest.php</file>
+            <file>RemoteExceptionTest.php</file>
+            <file>ResponseStatusTest.php</file>
+            <file>TemplatePlaceHolderTest.php</file>
+
+        </testsuite>
+    </testsuites>
+</phpunit>

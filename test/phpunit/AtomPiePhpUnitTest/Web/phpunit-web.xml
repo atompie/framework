@@ -1,0 +1,30 @@
+<phpunit
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="MainSuite">
+
+            <file>CookieJarFactoryTest.php</file>
+            <file>CookieTest.php</file>
+            <file>ParamConverterTest.php</file>
+            <file>ImmutableRequestTest.php</file>
+            <file>ResponseTest.php</file>
+            <file>RequestTest.php</file>
+            <file>ParamTest.php</file>
+            <file>ServerTest.php</file>
+            <file>SessionTest.php</file>
+            <file>AcceptHeaderMediaTypeArrayTest.php</file>
+            <file>AcceptHeaderTest.php</file>
+            <file>ContentTypeHeaderTest.php</file>
+            <file>UrlTest.php</file>
+            <file>EnvironmentTest.php</file>
+            <file>StatusTest.php</file>
+            <file>CookieJarTest.php</file>
+            <file>HeaderTest.php</file>
+
+        </testsuite>
+    </testsuites>
+</phpunit>

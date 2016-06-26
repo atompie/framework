@@ -1,0 +1,23 @@
+src/AtomPie/System:
+  Description: Sprawdza czy AtomPie.System nie ma dostępu do innych packagy
+  Allow:
+    - AtomPie.System
+    - AtomPie.Boundary.System
+    - parent
+    - stdClass
+    - Iterator
+    - Exception
+    - Composer
+    - SimpleXMLElement
+    - ReflectionMethod
+    - Generi # Package
+    - AtomPie.Service #Package
+    - AtomPie.Annotation # Package
+    - Mustache_Engine # Package
+    - Workshop.Web # Package
+    - AtomPie.Core # Package
+    - AtomPie.EventBus # Package
+    - AtomPie.DependencyInjection # Package
+    - AtomPie.Boundary.Core # Package
+    - Workshop.System.IO # Package
+    - Workshop.I18n # Package

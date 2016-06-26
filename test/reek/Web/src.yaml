@@ -1,0 +1,16 @@
+src/AtomPie/Web:
+  Description: Sprawdza czy web zależy od wybranych bibliotek
+  Allow:
+    - AtomPie.Web # self
+    - Generi # Package
+    - AtomPie.System.IO # Package
+    - AtomPie.I18n # Package
+    - ArrayAccess
+    - Closure
+    - Countable
+    - stdClass
+    - parent
+    - finfo
+    - SimpleXMLElement
+    - ArrayObject
+    - Exception

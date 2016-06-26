@@ -1,0 +1,8 @@
+src/AtomPie/Html:
+  Allow:
+    - AtomPie.Html #self
+    - Generi
+    - parent
+    - Iterator
+    - Closure
+    - ArrayAccess

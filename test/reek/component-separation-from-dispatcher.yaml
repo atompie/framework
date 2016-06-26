@@ -1,0 +1,28 @@
+src/AtomPie/Gui:
+  Description: Oddziel Component od Dispatcher
+  Allow:
+    - parent
+    - Closure
+    - Exception
+    - ReflectionClass
+    - ReflectionFunctionAbstract
+    - ReflectionParameter
+    - Iterator
+    - stdClass
+    - SimpleXMLElement
+    - AtomPie.Gui # Dostęp do samego siebie
+    # Composer
+    - Generi # Composer dependency Generi
+    - AtomPie.Boundary.Gui.Component
+    - AtomPie.Boundary.Core
+    - AtomPie.Core.Service # Package
+    - AtomPie.DependencyInjection # Composer dependency AtomPie.DependencyInjection
+    - AtomPie.EventBus.EventHandler # Composer dependency
+    - Workshop.I18n # Composer dependency Workshop.I18n
+    - Workshop.Web # Composer dependency Workshop.Web
+    - Workshop.Html # Composer dependency Workshop.Html
+    - Workshop.System # Composer dependency Workshop.System.Io
+    - AtomPie.Annotation # Composer dependency AtomPie.Annotation
+    - AtomPie.View # Composer dependency AtomPie.View
+    - Mustache_Engine # Composer
+  FlipReport: Yes

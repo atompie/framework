@@ -1,0 +1,10 @@
+src:
+  Deny:
+    - Workshop.Environment
+  Skip:
+    - Workshop.Environment
+    - Workshop.Application
+    - Workshop.Kernel
+    - Workshop.Bootstrap
+    - Workshop.Config
+  WithNamespaces: Yes

@@ -1,0 +1,7 @@
+src/AtomPie/EventBus:
+  Allow:
+    - AtomPie.DependencyInjection #package
+    - Generi #package
+    - Closure
+    - AtomPie.EventBus #self
+    - AtomPie.Boundary.Core.EventBus #self

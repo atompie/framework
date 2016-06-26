@@ -1,0 +1,6 @@
+src:
+  Deny:
+    - AtomPie.System.Kernel
+  Skip:
+    - AtomPie.System.Kernel
+  WithNamespaces: Yes

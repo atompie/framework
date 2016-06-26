@@ -1,0 +1,12 @@
+<details>
+    <properties>Name: {{ Name }} Surname: {{ Surname }}</properties>
+    <block>{% block Name %}My name is {{ Name }}{% endblock %}</block>
+
+    <addres_collection_objects>
+        {% for addr in addresses %}
+            <address>{{ addr.item }}</address>
+        {% endfor %}
+    </addres_collection_objects>
+
+    <zip_code>{{ code.Zip }}</zip_code>
+</details>

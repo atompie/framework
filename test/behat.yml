@@ -1,0 +1,16 @@
+default:
+  autoload:
+        '': %paths.base%/features/bootstrap
+  suites:
+        default:
+            contexts:
+                - FeatureContext
+                - ParamContext
+                - RequestContext
+                - ResponseContext
+                - ApplicationContext
+                - EndPointContext
+                - PageContext
+                - BootstrapContext
+                - UrlContext
+                - EnvironmentContext

@@ -1,0 +1,12 @@
+src/Workshop/Boundary:
+  Description: Sprawdza czy interfejsy są abstrakcyjne. Interfejsy mogą być powiązane tylko z innymi interfejsami
+  Allow:
+    - AtomPie.Boundary
+    - Workshop.Boundary
+    - Workshop.Web.Boundary
+    - Workshop.Application.Event.Boundary
+    - AtomPie.DependencyInjection.Boundary
+    - ArrayAccess
+    - Closure
+    - Exception
+    - Generi.Boundary

@@ -1,0 +1,15 @@
+<data>
+    <table_row>
+        <table_header_1>{{ Header1Name }}</table_header_1>
+        <table_header_2>{{ Header2Name }}</table_header_2>
+    </table_row>
+    {% for detail      in columns %}
+        <columns>
+            <object>{{ detail }}</object>
+            <property>
+                <name>{{ detail.Name }}</name>
+                <surname>{{ detail.Surname }}</surname>
+            </property>
+        </columns>
+    {% endfor %}
+</data>

@@ -1,0 +1,12 @@
+src/Workshop/Annotation:
+  Allow:
+    - Workshop.Annotation
+    - ReflectionClass
+    - ReflectionFunction
+    - ReflectionFunctionAbstract
+    - parent
+    - Generi # package
+    - Workshop.Html # package
+    - Workshop.I18n # package
+
+

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+	<style type="text/css">
+		* {
+			font-family: Lato, Ubuntu, serif;
+			color: #ffffff;
+		}
+
+		BODY {background-color: red;}
+
+		.Exception {
+			padding: 20px;
+			margin: 10px;
+		}
+
+		H3.ErrorMessage {
+			font-size: 1.5em;
+			margin: 0 0 10px;
+			overflow: auto;
+			word-wrap: break-word;
+		}
+
+		.Line,
+		.File,
+		.Code {
+			margin: 0;
+			font-size: 1.2em;
+		}
+
+		.StackTrace {
+			border-top: solid 2px white;
+			padding-top: 20px;
+			margin-top: 20px;
+			font-size: 0.9em;
+		}
+
+	</style>
+</head>
+<body>
+<div class="Exception">
+
+	<h1 class="ErrorMessage">{{ ExceptionType }} {{Thrown}}</h1>
+	<h3 class="ErrorMessage">{{ ErrorMessage }}</h3>
+	<p class="Code">Code: {{ Code }}</p>
+	<p class="Line">Line: {{ Line }}</p>
+	<p class="File">File: {{ File }}</p>
+	<ul class="StackTrace">
+		{{# StackTrace }}
+			<li>{{ . }}</li>
+		{{/StackTrace}}
+	</ul>
+	<pre class="Line">Internal Exception: {{ InternalException }}</pre>
+</div>
+</body>
+</html>

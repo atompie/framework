@@ -1,0 +1,4 @@
+src:
+  Deny:
+    - AtomPie.Web.Session.ParamStatePersister
+  WithNamespaces: Yes
