@@ -79,7 +79,7 @@ class Calculator {
 ```
 
 Type http://your.server/Calculator.divide?numbre1=1&number2=2 and you'll
-get 3 as a result.
+get 0.5 as a result.
 
 How about making it an API EndPoint and post data as JSON. Try this. 
 
