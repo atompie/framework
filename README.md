@@ -44,12 +44,7 @@ Micro-framework should:
 Any other functionality should be handled by framework-agnostic composer 
 packages.
 
-# Manual index
+# Manual
 
-* [Application separation](ApplicationSeparation)
-* [Bootstrapping framework](Bootstrapping)
-* [EndPoints](EndPoints)
-* [EndPoint annotations](EndPoint-annotations)
-* [Dependency injection](Dependency-injection)
-* [Parameter validation](ParameterValidation)
+Please read [wiki for more information](https://github.com/atompie/framework/wiki)
 
