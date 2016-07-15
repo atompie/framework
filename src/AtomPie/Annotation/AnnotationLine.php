@@ -1,10 +1,15 @@
 <?php
 namespace AtomPie\Annotation {
 
-    use AtomPie\Html\Attributes;
-
     class AnnotationLine
     {
+        
+        public function __construct($sAnnotationClassName)
+        {
+            $this->ClassName = $sAnnotationClassName;
+            $this->Attributes = new Attributes();
+        }
+
         /**
          * @var string
          */

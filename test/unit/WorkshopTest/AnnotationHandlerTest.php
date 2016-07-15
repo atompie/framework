@@ -5,16 +5,16 @@ require_once __DIR__ . '/../Config.php';
 
 use AtomPie\System\Dispatch\ClientAnnotationValidator;
 use AtomPie\System\Dispatch\DispatchException;
-use AtomPie\Core\Annotation\Tag\Client;
+use AtomPie\AnnotationTag\Client;
 use AtomPie\Core\Service\AuthorizeAnnotationService;
-use AtomPie\Web\Environment;
 use AtomPie\System\Dispatch\DispatchAnnotationFetcher;
-use AtomPie\Core\Annotation\Tag\Authorize;
-use AtomPie\Core\Annotation\Tag\Header;
+use AtomPie\AnnotationTag\Authorize;
+use AtomPie\AnnotationTag\Header;
 use AtomPie\Web\Connection\Http\Content;
 use AtomPie\Web\Connection\Http\Header\ContentType;
 use AtomPie\Web\Connection\Http\Request;
 use AtomPie\Web\Connection\Http\Request\Method;
+use Generi\Exception;
 
 /**
  * @Authorize(ResourceIndex="WWWAnnotated",AuthType="Basic",AuthToken="class:class")
@@ -259,7 +259,7 @@ class AnnotationHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotationHandler_PhpDocFromMethod_Exception_NotBool()
     {
-        $this->setExpectedException(\Generi\Exception::class);
+        $this->expectException(Exception::class);
         $oHandler = new AuthorizeAnnotationService();
         /** @noinspection PhpUnusedLocalVariableInspection */
         list($bResult, $sMessage) = $oHandler->invokeAuthorizeAnnotation(
@@ -269,7 +269,7 @@ class AnnotationHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotationHandler_PhpDocFromMethod_Exception_NoMethod()
     {
-        $this->setExpectedException(\ReflectionException::class);
+        $this->expectException(\ReflectionException::class);
         $oHandler = new AuthorizeAnnotationService();
         /** @noinspection PhpUnusedLocalVariableInspection */
         list($bResult, $sMessage) = $oHandler->invokeAuthorizeAnnotation(
@@ -301,7 +301,7 @@ class AnnotationHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $oRequest = Boot::getEnv()->getRequest();
         $oHandler = new DispatchAnnotationFetcher();
-        $this->setExpectedException(DispatchException::class);
+        $this->expectException(DispatchException::class);
         $oClient = $oHandler->getClientAnnotation(new WWWAnnotated(), 'webMethodPost');
         (new ClientAnnotationValidator($oClient))->validateMethod($oRequest);
     }
@@ -353,7 +353,7 @@ class AnnotationHandlerTest extends \PHPUnit_Framework_TestCase
         $oRequest->setMethod(Method::PUT);
         $oRequest->setContent(new Content('', new ContentType('application/json')));
         $oHandler = new DispatchAnnotationFetcher();
-        $this->setExpectedException(DispatchException::class);
+        $this->expectException(DispatchException::class);
         $oClient = $oHandler->getClientAnnotation(new WWWAnnotated(), 'webMethodPostAndGet');
         $bResult = (new ClientAnnotationValidator($oClient))->validateMethod($oRequest);
         $this->assertTrue($bResult);
@@ -366,7 +366,7 @@ class AnnotationHandlerTest extends \PHPUnit_Framework_TestCase
         $oRequest->setContent(new Content('', new ContentType('text/html')));
         $oHandler = new DispatchAnnotationFetcher();
 
-        $this->setExpectedException(DispatchException::class);
+        $this->expectException(DispatchException::class);
         $oClient1 = $oHandler
             ->getClientAnnotation(new WWWAnnotated(), 'webMethodPostJson');
         $oClient2 = $oHandler

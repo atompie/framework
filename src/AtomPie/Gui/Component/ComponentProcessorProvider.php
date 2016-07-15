@@ -10,7 +10,6 @@ namespace AtomPie\Gui\Component {
     use AtomPie\Gui\Component\Template\Master;
     use AtomPie\Gui\Page;
     use AtomPie\Boundary\Core\ISetUpContentProcessor;
-    use AtomPie\Boundary\Core\IAmFrameworkConfig;
     use AtomPie\Gui\ViewTree\ViewIterator;
     use AtomPie\View\Boundary\ICanBeRendered;
     use AtomPie\I18n\Label;
@@ -21,11 +20,6 @@ namespace AtomPie\Gui\Component {
 
     class ComponentProcessorProvider implements ISetUpContentProcessor, ISetUpDependencyContainer
     {
-
-        /**
-         * @var IAmFrameworkConfig
-         */
-        private $oConfig;
 
         /**
          * @var IAmDispatchManifest
@@ -42,12 +36,17 @@ namespace AtomPie\Gui\Component {
          */
         private $oComponentDependencyContainer;
 
+        /**
+         * @var string
+         */
+        private $sViewFolder;
+
         public function __construct(
-            IAmFrameworkConfig $oConfig,
+            $sViewFolder,
             IAmEnvironment $oEnvironment
         ) {
-            $this->oConfig = $oConfig;
             $this->oEnvironment = $oEnvironment;
+            $this->sViewFolder = $sViewFolder;
         }
 
         /**
@@ -67,8 +66,7 @@ namespace AtomPie\Gui\Component {
         public function configureProcessor(IRegisterContentProcessors $oContentProcessor)
         {
 
-            $sRootFolder = $this->oConfig->getRootFolder();
-            $sViewFolder = $this->oConfig->getViewFolder();
+            $sViewFolder = $this->sViewFolder;
 
             $oComponentDependencyContainer = $this->oComponentDependencyContainer;
 
@@ -108,19 +106,19 @@ namespace AtomPie\Gui\Component {
             // !!! Order is important
             $oContentProcessor->registerFinally(
                 Page::class,
-                function (Page $oPage) use (
-                    $sRootFolder,
-                    $sViewFolder
-                ) {
+                function (Page $oPage) use ($sViewFolder) {
+
                     //////////////////////////////////////
                     // Render
 
+                    if($sViewFolder === null) {
+                        throw new Exception(new Label('Missing configuration of view folder.'));
+                    }
+
                     $mContent = self::render(
-                        ($sViewFolder !== null)
-                            ? $sViewFolder
-                            : $sRootFolder,
-                        $oPage,
-                        $this->oEnvironment->getResponse()->getContent()->getContentType()
+                        $sViewFolder
+                        , $oPage
+                        , $this->oEnvironment->getResponse()->getContent()->getContentType()
                     );
 
                     // Wrap in template
@@ -137,19 +135,19 @@ namespace AtomPie\Gui\Component {
             );
             $oContentProcessor->registerFinally(
                 IAmComponent::class,
-                function (IAmComponent $oComponent) use (
-                    $sRootFolder,
-                    $sViewFolder
-                ) {
+                function (IAmComponent $oComponent) use ($sViewFolder) {
+
                     //////////////////////////////////////
                     // Render
 
+                    if($sViewFolder === null) {
+                        throw new Exception(new Label('Missing configuration of view folder.'));
+                    }
+
                     return self::render(
-                        ($sViewFolder !== null)
-                            ? $sViewFolder
-                            : $sRootFolder,
-                        $oComponent,
-                        $this->oEnvironment->getResponse()->getContent()->getContentType()
+                        $sViewFolder
+                        , $oComponent
+                        , $this->oEnvironment->getResponse()->getContent()->getContentType()
                     );
                 }
             );
@@ -231,7 +229,7 @@ namespace AtomPie\Gui\Component {
         private function factoryDependencyContainer()
         {
 
-            $oStatePersister = new ParamStatePersister(
+            $oStateSaver = new ParamStatePersister(
                 $this->oEnvironment->getSession(),
                 $this->oDispatchManifest->getEndPoint()->__toString()
             );
@@ -239,7 +237,7 @@ namespace AtomPie\Gui\Component {
             $oComponentDependencyContainer = new ComponentDependencyContainer(
                 $this->oEnvironment,
                 $this->oDispatchManifest,
-                $oStatePersister
+                $oStateSaver
             );
 
             return $oComponentDependencyContainer;

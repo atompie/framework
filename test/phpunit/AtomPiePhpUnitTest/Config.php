@@ -2,7 +2,11 @@
 namespace AtomPiePhpUnitTest {
 
     use AtomPie\Core\FrameworkConfig;
-    use AtomPie\System\Router;
+    use AtomPie\File\FileProcessorProvider;
+    use AtomPie\Gui\Component\ComponentProcessorProvider;
+    use AtomPie\System\EndPointConfig;
+    use AtomPie\System\EventConfig;
+    use AtomPie\System\Namespaces;
     use AtomPie\System\Environment\EnvVariable;
     use AtomPie\Web\Environment;
 
@@ -11,19 +15,30 @@ namespace AtomPiePhpUnitTest {
 
         public static function get()
         {
+            $oEnvironment = Environment::getInstance();
+            $sViewFolder =  __DIR__ . '/../../AtomPieTestAssets/Resource/Theme';
+            
             return new FrameworkConfig(
-                Environment::getInstance(),
-                new Router(__DIR__.'/../AtomPieTestAssets/Routing/Routing.php'),
-                new ApplicationConfigDefinition(EnvVariable::getInstance()),
-                __DIR__ . '/../',
-                __DIR__ . '/../../AtomPieTestAssets/Resource/Theme',
-                [
-                    "\\AtomPieTestAssets\\Resource\\Mock"
-                ],
-                [
-                    "\\AtomPieTestAssets\\Resource\\Mock"
-                ]
-
+                'Main'
+                , new EndPointConfig(
+                    new Namespaces([
+                        "\\AtomPieTestAssets\\Resource\\Mock"
+                    ])
+                )
+                , new ApplicationConfigSwitcher(EnvVariable::getInstance())
+                , Environment::getInstance()
+                , []
+                , []
+                , [
+                    new FileProcessorProvider(),
+                    new ComponentProcessorProvider($sViewFolder, $oEnvironment)
+                ] // Content processors
+                , null
+                , new EventConfig(
+                    new Namespaces([
+                        "\\AtomPieTestAssets\\Resource\\Mock"
+                    ])
+                )
             );
         }
 

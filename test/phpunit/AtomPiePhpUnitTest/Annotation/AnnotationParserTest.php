@@ -2,6 +2,7 @@
 namespace AtomPiePhpUnitTest\Annotation;
 
 use AtomPie\Annotation\AnnotationParser;
+use AtomPie\Annotation\AnnotationTags;
 use AtomPiePhpUnitTest\Annotation\Mock\TestAnnotation;
 
 class NoPhpDoc {
@@ -122,11 +123,11 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseAnnotationsFromObjectPhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             MockAnnotationParser::class
         );
-        $this->checkTestAnnotation($aAnnotations);
+        $this->checkTestAnnotation($oAnnotations);
 
     }
 
@@ -136,11 +137,11 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseAnnotationsFromReflectedObjectPhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             new \ReflectionClass(new MockAnnotationParser)
         );
-        $this->checkTestAnnotation($aAnnotations);
+        $this->checkTestAnnotation($oAnnotations);
 
     }
 
@@ -150,12 +151,12 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseAnnotationsFromMethodPhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             new \ReflectionClass(new MockAnnotationParser),
             'method'
         );
-        $this->checkTestAnnotation($aAnnotations);
+        $this->checkTestAnnotation($oAnnotations);
 
     }
 
@@ -165,12 +166,12 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseAnnotationsFromMethodPhpDoc1()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             new MockAnnotationParser,
             'method'
         );
-        $this->checkTestAnnotation($aAnnotations);
+        $this->checkTestAnnotation($oAnnotations);
 
     }
 
@@ -180,11 +181,11 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldNotParseAnnotationsFromObjectWithoutPhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             NoPhpDoc::class
         );
-        $this->assertNull($aAnnotations);
+        $this->assertTrue($oAnnotations->isEmpty());
 
     }
 
@@ -194,13 +195,13 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldNotParseAnnotationsFromClosureWithoutPhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
             new \ReflectionFunction(function() {
 
             })
         );
-        $this->assertNull($aAnnotations);
+        $this->assertTrue($oAnnotations->isEmpty());
 
     }
 
@@ -210,7 +211,7 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseAnnotationsFromClosurePhpDoc()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             ['TestAnnotation' => TestAnnotation::class],
 
             new \ReflectionFunction(
@@ -224,7 +225,7 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
                 function() {  }
             )
         );
-        $this->checkTestAnnotation($aAnnotations);
+        $this->checkTestAnnotation($oAnnotations);
     }
 
     /**
@@ -235,7 +236,7 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     public function shouldParseCustomTag()
     {
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotations('
+        $oAnnotations = $oParser->getAnnotations('
 			/**
 			 *
 			 * Test description
@@ -245,13 +246,13 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
 			 */
 		', ['TestAnnotation' => TestAnnotation::class]
         );
-        $this->assertTrue(count($aAnnotations[TestAnnotation::class]) == 3);
+        $this->assertTrue(count($oAnnotations[TestAnnotation::class]) == 3);
         /** @var TestAnnotation $oFirst */
-        $oSecond = $aAnnotations[TestAnnotation::class][1];
+        $oSecond = $oAnnotations[TestAnnotation::class][1];
         $this->assertTrue($oSecond->param1 == 'value1');
         $this->assertTrue($oSecond->param2 == '');
 
-        $oThird = $aAnnotations[TestAnnotation::class][2];
+        $oThird = $oAnnotations[TestAnnotation::class][2];
         $this->assertTrue(!isset($oThird->param1));
         $this->assertTrue($oThird->param2 == 'value3');
         $this->assertTrue($oThird->param3 == 'value1,value2');
@@ -291,7 +292,7 @@ class AnnotationParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @param $aAnnotations
      */
-    private function checkTestAnnotation(array $aAnnotations)
+    private function checkTestAnnotation(AnnotationTags $aAnnotations)
     {
         $this->assertTrue(!is_null($aAnnotations));
         $this->assertTrue(count($aAnnotations[TestAnnotation::class]) == 3);

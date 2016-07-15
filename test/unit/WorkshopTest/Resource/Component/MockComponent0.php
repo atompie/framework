@@ -2,11 +2,11 @@
 namespace WorkshopTest\Resource\Component;
 
 use AtomPie\Gui\Component;
-use AtomPie\Core\Annotation\Tag\Client;
+use AtomPie\AnnotationTag\Client;
 use AtomPie\Web\Environment;
-use AtomPie\Gui\Component\Annotation\Tag\Template;
+use AtomPie\AnnotationTag\Template;
 use AtomPie\Html\Tag\Head;
-use AtomPie\Core\Annotation\Tag\EndPoint;
+use AtomPie\AnnotationTag\EndPoint;
 use AtomPie\Web\Connection\Http\Url\Param;
 
 /**

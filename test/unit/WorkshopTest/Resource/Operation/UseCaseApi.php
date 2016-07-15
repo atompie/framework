@@ -3,8 +3,8 @@ namespace WorkshopTest\Resource\Operation {
 
     use Generi\Object;
     use AtomPie\Web\Environment;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Header;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Header;
     use WorkshopTest\Resource\Repo\DataRepository;
 
     class UseCaseApi extends Object

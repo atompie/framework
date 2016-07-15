@@ -10,11 +10,14 @@ use AtomPie\DependencyInjection\Dependency;
 use AtomPie\DependencyInjection\DependencyContainer;
 use AtomPie\DependencyInjection\DependencyInjector;
 use AtomPie\DependencyInjection\Exception;
+use AtomPie\System\Contract;
+use AtomPie\System\ContractFillers;
 use AtomPie\System\DependencyContainer\EndPointDependencyContainer;
-use AtomPie\System\Router;
+use AtomPie\System\EndPointConfig;
+use AtomPie\System\Namespaces;
 use AtomPie\System\UrlProvider;
 use AtomPie\Web\Environment;
-use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
 interface Interface1
 {
@@ -26,14 +29,19 @@ interface Interface2
 
 class A1
 {
-    public function test() {
+    public function test()
+    {
 
     }
+
 }
 
 class A2 implements Interface1
 {
-
+    public static function __build()
+    {
+        return new A2();
+    }
 }
 
 class A3 extends A1
@@ -85,8 +93,8 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
 
         $oInjector = new DependencyInjector($oContainer1);
         $oInjector->invokeClosure('typeLess', function ($a) use ($oPhpUnit) {
-                $oPhpUnit->assertTrue($a == 'test1');
-            }
+            $oPhpUnit->assertTrue($a == 'test1');
+        }
             , [
                 Dependency::TYPE_LESS => function () {
                     return 'test1';
@@ -125,23 +133,71 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function shouldUseContractFillers()
+    {
+        $oPhpUnit = $this;
+
+        $oInjector = new DependencyInjector(
+            new DependencyContainer()
+            , new ContractFillers([
+                    (new Contract(Interface1::class))->fillBy(A2::class)
+                ]
+            )
+        );
+        $oInjector->invokeClosure('injection', function (Interface1 $i1) use ($oPhpUnit) {
+            $oPhpUnit->assertInstanceOf(A2::class, $i1);
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function shouldThrowExceptionOnUEmptyContractFillers()
+    {
+        $oPhpUnit = $this;
+
+        $oInjector = new DependencyInjector(new DependencyContainer(), null);
+        $this->expectException(Exception::class);
+        $oInjector->invokeClosure('injection', function (Interface1 $i1) use ($oPhpUnit) {
+            $oPhpUnit->assertInstanceOf(A2::class, $i1);
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function shouldThrowExceptionOnIncorrectUseOfContractFiller()
+    {
+        $oPhpUnit = $this;
+
+        $oInjector = new DependencyInjector(
+            new DependencyContainer()
+            , new ContractFillers([
+                    (new Contract(Interface1::class))->fillBy(A1::class) // A1 does not implement Interface1
+                ]
+            ));
+        $this->expectException(Exception::class);
+        $oInjector->invokeClosure('injection', function (Interface1 $i1) use ($oPhpUnit) {
+            $oPhpUnit->assertInstanceOf(A2::class, $i1);
+        });
+    }
+
+    /**
+     * @test
+     */
     public function shouldInjectClosureDependenciesAndKeepTypeLessDependencies()
     {
         $oEnvironment = Environment::getInstance();
-            
+
         $oConfig = new FrameworkConfig(
-            $oEnvironment,
-            new Router(__DIR__.'/../../AtomPieTestAssets/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__,
-            __DIR__ . '/../AtomPieTestAssets/Resource/Theme',
-            [],
-            [],
-            [
-                '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
-            ],
-            [],
-            'none'
+            'none',
+            new EndPointConfig(
+                new Namespaces(),
+                new Namespaces([
+                    '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
+                ])),
+            new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+            $oEnvironment
         );
         $oManifest = new DispatchManifest($oConfig, new EndPointImmutable('none.none'));
 
@@ -150,7 +206,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             Environment::getInstance(),
             $oConfig,
             $oManifest,
-            new UrlProvider($oManifest,[])
+            new UrlProvider($oManifest, [])
         );
 
         // Add dependency for closure
@@ -161,7 +217,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         ]);
 
         // It has typeless dependencies too
-        $oDependency = $oContainer->getInjectionClosureFor(Dependency::CLOSURE,'test');
+        $oDependency = $oContainer->getInjectionClosureFor(Dependency::CLOSURE, 'test');
         $this->assertTrue($oDependency->hasTypeLessDependency());
         $this->assertTrue($oDependency->hasDependency(A2::class));
     }
@@ -173,20 +229,17 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
     {
 
         $oEnvironment = Environment::getInstance();
-        
+
         $oConfig = new FrameworkConfig(
-            $oEnvironment,
-            new Router(__DIR__.'/../../AtomPieTestAssets/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__,
-            __DIR__ . '/../AtomPieTestAssets/Resource/Theme',
-            [],
-            [],
-            [
-                '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
-            ],
-            [],
-            'none'
+            'none',
+            new EndPointConfig(
+                new Namespaces(),
+                new Namespaces([
+                    '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
+                ])
+            ),
+            new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+            $oEnvironment
         );
         $oManifest = new DispatchManifest($oConfig, new EndPointImmutable('none.none'));
 
@@ -194,7 +247,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             Environment::getInstance(),
             $oConfig,
             $oManifest,
-            new UrlProvider($oManifest,[])
+            new UrlProvider($oManifest, [])
         );
 
         $oDependency = new Dependency();
@@ -211,7 +264,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             'test',
             $oDependency
         );
-        $oDependency = $oContainer->getInjectionClosureFor(A1::class,'test');
+        $oDependency = $oContainer->getInjectionClosureFor(A1::class, 'test');
         $this->assertTrue($oDependency->hasTypeLessDependency());
         $this->assertTrue($oDependency->hasDependency(A2::class));
     }
@@ -330,7 +383,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             )
         );
         // Dependencies can be set only on empty container.
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oContainer->forMethod('Class', 'Method')->setDependency(
             array(
                 'Interface1' => function () {
@@ -460,7 +513,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             )
         );
         // Could not find any DI configuration
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oInject = new DependencyInjector($oContainer);
         $oInject->invokeMethod(new EndPoint1, 'injection');
     }
@@ -482,7 +535,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             )
         );
         // Could not inject class [AtomPiePhpUnitTest\DependencyInjection\A1]
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oInject = new DependencyInjector($oContainer);
         $oInject->invokeMethod(new EndPoint1, 'injection');
     }
@@ -719,7 +772,7 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($bReturn);
 
         $oInjector = new DependencyInjector($oContainer1);
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         // TODO injection into closure with wrong ClosureId does not matter
         // TODO as all closure injections are merged into one.
         // TODO you can pass any id
@@ -777,8 +830,8 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $oInjector = new DependencyInjector($oContainer1);
 
         // Could not inject class [AtomPiePhpUnitTest\DependencyInjection\A1]
-        $this->setExpectedException(Exception::class);
-        $oInjector->invokeClosure('container1', function (A1 $i1)  {
+        $this->expectException(Exception::class);
+        $oInjector->invokeClosure('container1', function (A1 $i1) {
         });
     }
 

@@ -62,7 +62,7 @@ class EventSpecTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldFailEventSpecWithWrongFormat()
     {
-        $this->setExpectedException(EndPointException::class);
+        $this->expectException(EndPointException::class);
         new EventSpecImmutable(
             'WorkshopTest_Resource_Component_MockComponent0.Name',
             [

@@ -1,15 +1,39 @@
 <?php
 namespace AtomPiePhpUnitTest\System;
 
+use AtomPie\Boundary\Core\IAmContractDependency;
+use AtomPie\System\Contract;
 use AtomPieTestAssets\Middleware\TestAfterMiddleWare;
 use AtomPieTestAssets\Middleware\TestBeforeMiddleWare;
 use AtomPieTestAssets\Middleware\TestBeforeSetContentTypeToJson;
+use AtomPieTestAssets\Resource\Mock\DependentClass;
+use AtomPieTestAssets\Resource\Mock\DependentClassInterface;
+use AtomPiePhpUnitTest\FrameworkTest;
 use AtomPie\File\FileProcessorProvider;
 use AtomPie\Core\Dispatch\DispatchManifest;
-use AtomPiePhpUnitTest\FrameworkTest;
 use AtomPie\System\IO\File;
 use AtomPie\Web\Connection\Http\Header\Status;
 use AtomPie\Web\Environment;
+
+class ContractFillers implements IAmContractDependency {
+
+    /**
+     * Returns array of services that will fill
+     * the contract/interface in form of
+     *
+     * [
+     *     Interface::class => Service::class
+     * ]
+     *
+     * @return array
+     */
+    public function provideContractDependencies()
+    {
+        return [
+            DependentClassInterface::class => DependentClass::class
+        ];
+    }
+}
 
 class KernelTest extends FrameworkTest
 {
@@ -19,9 +43,8 @@ class KernelTest extends FrameworkTest
      */
     public function shouldBootAndReturnErrorThatMethodDoesNotExist()
     {
-
         $oConfig = $this->getDefaultConfig('MockEndPoint.doNotExists');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $this->assertTrue($oResponse->getStatus()->is(Status::NOT_FOUND));
 
     }
@@ -32,7 +55,7 @@ class KernelTest extends FrameworkTest
     public function shouldBootAndReturnResponseWithStatusOK()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.index');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
 
         $this->assertTrue($oResponse->getStatus()->isOk());
         $this->assertTrue($oResponse->getContent()->get() == '1');
@@ -44,7 +67,24 @@ class KernelTest extends FrameworkTest
     public function shouldBootAndReturnResponseWithStatusOKAndDependentClassLoaded()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.indexWithDependencyInjection');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
+        $this->assertTrue($oResponse->getStatus()->isOk());
+        $this->assertTrue($oResponse->getContent()->get() == 'Dependency-Injection-Container-Exists');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBootAndReturnResponseWithStatusOKAndDependentClassInterfaceLoaded()
+    {
+        $oConfig = $this->getDefaultConfig(
+            'MockEndPoint.indexWithDependencyInjectionAsInterface',
+            [
+                (new Contract(DependentClassInterface::class))
+                    ->fillBy(DependentClass::class)
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig);
         $this->assertTrue($oResponse->getStatus()->isOk());
         $this->assertTrue($oResponse->getContent()->get() == 'Dependency-Injection-Container-Exists');
     }
@@ -56,13 +96,11 @@ class KernelTest extends FrameworkTest
     {
         $sDefaultEndPoint = 'MockEndPoint.indexDependencyInsideDependency';
         $oConfig = $this->getDefaultConfig($sDefaultEndPoint);
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $this->assertTrue($oResponse->getStatus()->isOk());
         // Returns configs default endpoint.
         $this->assertTrue($oResponse->getContent()->get() == $sDefaultEndPoint);
     }
-
-
 
     /**
      * @test
@@ -70,7 +108,7 @@ class KernelTest extends FrameworkTest
     public function shouldBootAndReturnResponseWithStatusOKAndDependentClassLoadedAsFactoryMethod()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.indexWithFactoryMethodDI');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         echo $oResponse;
 
         $this->assertTrue($oResponse->getStatus()->isOk());
@@ -84,7 +122,7 @@ class KernelTest extends FrameworkTest
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.indexWithoutFactoryMethodDI');
 
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $this->assertTrue($oResponse->getStatus()->is(Status::INTERNAL_SERVER_ERROR));
     }
 
@@ -93,10 +131,19 @@ class KernelTest extends FrameworkTest
      */
     public function shouldBootAndReturnResponseProcessedByFileProcessor()
     {
-        $oConfig = $this->getDefaultConfig('MockEndPoint.getFile');
-        $oResponse = $this->bootKernel($oConfig, [
-            new FileProcessorProvider()
-        ], []);
+        $oConfig = $this->getDefaultConfig(
+            'MockEndPoint.getFile',
+            [],
+            [], 
+            [
+                new FileProcessorProvider()
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig
+//            , [
+//                new FileProcessorProvider()
+//            ]
+        );
 
         $this->assertTrue($oResponse->getStatus()->isOk());
         $this->assertTrue($oResponse->getContent()->get() == 'test');
@@ -108,10 +155,14 @@ class KernelTest extends FrameworkTest
     public function shouldBootWithMiddleAfterWareAndChangeResponse()
     {
 
-        $oConfig = $this->getDefaultConfig('MockEndPoint.index');
-        $oResponse = $this->bootKernel($oConfig, [], [
+        $oConfig = $this->getDefaultConfig(
+            'MockEndPoint.index'
+            , []
+            , [
             new TestAfterMiddleWare()
-        ]);
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig);
 
         $this->assertTrue($oResponse->getContent()->get() == TestAfterMiddleWare::class);
     }
@@ -121,13 +172,22 @@ class KernelTest extends FrameworkTest
      */
     public function shouldBootWithBeforeMiddleWareAndChangeRequest()
     {
-        $oConfig = $this->getDefaultConfig('MockEndPoint.index');
-        $oResponse = $this->bootKernel($oConfig, [
-            new FileProcessorProvider()
-        ], [
-            new TestBeforeMiddleWare()  // This middleware replace MockEndPoint.index
-            // into MockEndPoint.getFile
-        ]);
+        $oConfig = $this->getDefaultConfig(
+            'MockEndPoint.index'
+            , []
+            , [
+                new TestBeforeMiddleWare()  // This middleware replace MockEndPoint.index
+                // into MockEndPoint.getFile
+            ]
+            , [
+                new FileProcessorProvider()
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig
+//            , [
+//                new FileProcessorProvider()
+//            ]
+        );
 
         $oRequest = Environment::getInstance()->getRequest();
 
@@ -141,10 +201,13 @@ class KernelTest extends FrameworkTest
      */
     public function shouldNotBootWithWithoutParams()
     {
-        $oConfig = $this->getDefaultConfig('MockEndPoint.getWithParams');
-        $oResponse = $this->bootKernel($oConfig, [], [
-            new TestBeforeSetContentTypeToJson()
-        ]);
+        $oConfig = $this->getDefaultConfig('MockEndPoint.getWithParams'
+            , []
+            , [
+                new TestBeforeSetContentTypeToJson()
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig);
         $oJson = $oResponse->getContent()->decodeAsJson();
 
         $this->assertTrue($oJson->ErrorMessage == 'Missing required parameter [param1].');
@@ -157,7 +220,7 @@ class KernelTest extends FrameworkTest
     public function shouldBootWithWithoutParams()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.getWithNotRequiredParams');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $this->assertTrue($oResponse->getStatus()->isOk());
         $this->assertTrue($oResponse->getContent()->get() == true);
     }
@@ -169,10 +232,14 @@ class KernelTest extends FrameworkTest
     {
         $_REQUEST['param1'] = 'valueOfParam1';
 
-        $oConfig = $this->getDefaultConfig('MockEndPoint.getWithParams');
-        $oResponse = $this->bootKernel($oConfig, [], [
-            new TestBeforeSetContentTypeToJson()
-        ]);
+        $oConfig = $this->getDefaultConfig(
+            'MockEndPoint.getWithParams'
+            , []
+            , [
+                new TestBeforeSetContentTypeToJson()
+            ]
+        );
+        $oResponse = $this->bootKernel($oConfig);
 
         $oJson = $oResponse->getContent()->decodeAsJson();
         $this->assertTrue($oResponse->getStatus()->isOk());
@@ -185,7 +252,7 @@ class KernelTest extends FrameworkTest
     public function shouldBootWithException()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.error');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $oJson = $oResponse->getContent()->decodeAsJson();
 
         $this->assertTrue($oResponse->getStatus()->is(Status::INTERNAL_SERVER_ERROR));
@@ -198,18 +265,10 @@ class KernelTest extends FrameworkTest
     public function shouldBootWithExceptionAnd404Status()
     {
         $oConfig = $this->getDefaultConfig('MockEndPoint.errorUnAuthorized');
-        $oResponse = $this->bootKernel($oConfig, [], []);
+        $oResponse = $this->bootKernel($oConfig);
         $oJson = $oResponse->getContent()->decodeAsJson();
         $this->assertTrue($oResponse->getStatus()->is(Status::UNAUTHORIZED));
         $this->assertTrue($oResponse->hasHeader('WWW-Authenticate'));
         $this->assertTrue('TestException' == $oJson->ErrorMessage);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldBootWithCustomDi()
-    {
-
     }
 }

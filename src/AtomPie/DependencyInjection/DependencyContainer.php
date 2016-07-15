@@ -3,6 +3,10 @@ namespace AtomPie\DependencyInjection {
 
     use AtomPie\DependencyInjection\Boundary\IConstructInjection;
 
+    /**
+     * Class DependencyContainer
+     * @package AtomPie\DependencyInjection
+     */
     class DependencyContainer implements IConstructInjection
     {
 
@@ -13,6 +17,14 @@ namespace AtomPie\DependencyInjection {
          * @var array
          */
         private $aContainer = array();
+
+        /**
+         * DependencyContainer constructor.
+         * @internal
+         */
+        public function __construct()
+        {
+        }
 
         /**
          * @param $sClassType

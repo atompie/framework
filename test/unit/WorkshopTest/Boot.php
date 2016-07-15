@@ -1,13 +1,11 @@
 <?php
 namespace WorkshopTest {
 
-    use AtomPie\File\FileProcessorProvider;
     use AtomPie\Gui\Component\ComponentDependencyContainer;
-    use AtomPie\Gui\Component\ComponentProcessorProvider;
-    use AtomPie\System\Router;
+    use AtomPie\System\EndPointConfig;
+    use AtomPie\System\Namespaces;
     use AtomPie\System\UrlProvider;
     use AtomPie\System\Init;
-    use AtomPie\Boundary\System\IHandleException;
     use AtomPie\Boundary\Core\IAmFrameworkConfig;
     use AtomPie\System\DependencyContainer\EndPointDependencyContainer;
     use AtomPie\Core\FrameworkConfig;
@@ -17,7 +15,7 @@ namespace WorkshopTest {
     use AtomPie\Web;
     use AtomPie\Web\Boundary\IAmEnvironment;
     use AtomPie\Web\Environment;
-    use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+    use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
     class Boot
     {
@@ -66,10 +64,7 @@ namespace WorkshopTest {
                 $oEnvironment,
                 $oConfig,
                 $oDispatchManifest,
-                [
-                    new FileProcessorProvider(),
-                    new ComponentProcessorProvider($oConfig, $oEnvironment)
-                ]
+                $oConfig->getContentProcessors()
             );
 
             return $oApplication;
@@ -95,29 +90,17 @@ namespace WorkshopTest {
         /**
          * @param IAmEnvironment $oEnvironment
          * @param IAmFrameworkConfig $oConfig
-         * @param \AtomPie\System\DependencyContainer\EndPointDependencyContainer|null $oCustomEndPointDependencyContainer
          * @param null $oLoader
-         * @param array|null $aMiddleWares
-         * @param \AtomPie\Boundary\System\IHandleException|null $oErrorRenderer
          * @return Web\Boundary\IChangeResponse
          */
         public static function run(
             IAmEnvironment $oEnvironment,
             IAmFrameworkConfig $oConfig,
-            EndPointDependencyContainer $oCustomEndPointDependencyContainer = null,
-            $oLoader = null,
-            array $aMiddleWares = null,
-            IHandleException $oErrorRenderer = null
+            $oLoader = null
         ) {
 
-            $oKernel = new Kernel($oConfig, $oEnvironment, $aMiddleWares, $oLoader);
-            return $oKernel->boot(
-                [
-                    new FileProcessorProvider(),
-                    new ComponentProcessorProvider($oConfig, $oEnvironment)
-                ],
-                $oCustomEndPointDependencyContainer,
-                $oErrorRenderer);
+            $oKernel = new Kernel($oEnvironment, $oLoader);
+            return $oKernel->boot($oConfig);
         }
 
         /**
@@ -158,11 +141,10 @@ namespace WorkshopTest {
         private static function getFrameworkConfig($oEnvironment)
         {
             return new FrameworkConfig(
-                $oEnvironment,
-                new Router(__DIR__ . '/Routing/Routing.php'),
-                new ApplicationConfigDefinition($oEnvironment->getEnv()),
-                __DIR__,
-                __DIR__
+                'Main',
+                new EndPointConfig(new Namespaces()),
+                new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+                $oEnvironment
             );
         }
     }

@@ -121,16 +121,11 @@ class ImmutableRequestTest extends \PHPUnit_Framework_TestCase
     {
 //		$_SESSION = array();
         $_SESSION['test'] = '1';
-        var_dump($_SESSION);
+//        var_dump($_SESSION);
         $oRequest = new Request();
         $oResponse = $oRequest->send('http://www.onet.pl');
         $_SESSION['test1'] = '2';
 //		echo $oResponse->getContent()->get();
-        var_dump($_SESSION);
-    }
-
-    public function testSession1()
-    {
-        var_dump($_SESSION);
+//        var_dump($_SESSION);
     }
 }

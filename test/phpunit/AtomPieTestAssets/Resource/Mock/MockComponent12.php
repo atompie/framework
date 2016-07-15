@@ -2,14 +2,14 @@
 namespace AtomPieTestAssets\Resource\Mock {
 
     use AtomPie\Gui\Component;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\EndPoint;
 
     /**
      * @property int Property1
      * @property int Property2
      *
      * @EndPoint(ContentType="application/xml")
-     * This class will be sent do browser as ajax and
+     * This class will be sent to browser as ajax and
      * do not need @Template annotation
      * @package WorkshopTest\Resource\Component
      */

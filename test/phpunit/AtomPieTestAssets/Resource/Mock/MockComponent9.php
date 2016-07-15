@@ -3,10 +3,9 @@ namespace AtomPieTestAssets\Resource\Mock {
 
     use AtomPie\Html\Tag\Link;
     use AtomPie\Web\Boundary\IAmEnvironment;
-    use AtomPie\Web\Environment;
     use AtomPie\Gui\Component;
     use AtomPie\Web\Connection\Http\Url\Param;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
+    use AtomPie\AnnotationTag\Template;
 
     /**
      * @property MockComponent10 LoginForm

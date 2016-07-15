@@ -3,12 +3,12 @@ namespace AtomPie\Core\Service {
 
     use AtomPie\Boundary\Gui\Component\IBasicAuthorize;
     use AtomPie\Annotation\AnnotationParser;
-    use AtomPie\Core\Annotation\Tag\Authorize;
-    use AtomPie\Core\Annotation\Tag\Client;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Header;
-    use AtomPie\Core\Annotation\Tag\Log;
-    use AtomPie\Core\Annotation\Tag\SaveState;
+    use AtomPie\AnnotationTag\Authorize;
+    use AtomPie\AnnotationTag\Client;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Header;
+    use AtomPie\AnnotationTag\Log;
+    use AtomPie\AnnotationTag\SaveState;
     use Generi\Exception;
     use AtomPie\I18n\Label;
     use AtomPie\Web\Connection\Http\Header\Status;
@@ -41,13 +41,13 @@ namespace AtomPie\Core\Service {
             );
 
             $oParser = new AnnotationParser();
-            $aAnnotationCollection = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $aDefaultAnnotationMapping,
                 $mEndPointObject,
                 $sEndPointMethod
             );
 
-            if (!empty($aAnnotationCollection[Authorize::class])) {
+            if ($oAnnotations->has(Authorize::class)) {
 
                 $aStrategies = array(
 
@@ -120,7 +120,7 @@ namespace AtomPie\Core\Service {
                     },
                 );
 
-                foreach ($aAnnotationCollection[Authorize::class] as $oAnnotation) {
+                foreach ($oAnnotations[Authorize::class] as $oAnnotation) {
                     // Factory
                     if ($oAnnotation instanceof Authorize) {
 

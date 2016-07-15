@@ -1,7 +1,7 @@
 <?php
 namespace AtomPie\System\Dispatch {
 
-    use AtomPie\Core\Annotation\Tag\Client;
+    use AtomPie\AnnotationTag\Client;
     use AtomPie\I18n\Label;
     use AtomPie\Web\Boundary\IAmRequest;
     use AtomPie\Web\Boundary\IHaveHeaders;
@@ -14,13 +14,12 @@ namespace AtomPie\System\Dispatch {
     {
 
         /**
-         * @var Client
+         * @var \AtomPie\AnnotationTag\Client
          */
         private $oClientTag;
 
         public function __construct(Client $oClientTag)
         {
-
             $this->oClientTag = $oClientTag;
         }
 

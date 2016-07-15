@@ -6,7 +6,6 @@ namespace AtomPie\Gui\Component {
     use AtomPie\Boundary\Gui\Component\IAmNamespaceValue;
     use AtomPie\EventBus\EventHandler;
     use AtomPie\Annotation\AnnotationParser;
-    use AtomPie\Annotation\AnnotationTag;
     use AtomPie\DependencyInjection\Boundary\IConstructInjection;
     use AtomPie\DependencyInjection\DependencyContainer;
     use AtomPie\DependencyInjection\DependencyInjector;
@@ -142,16 +141,16 @@ namespace AtomPie\Gui\Component {
 
             // Set default set of Annotations
             $aDefaultComponentClassAnnotations = array(
-                'Template' => Annotation\Tag\Template::class
+                'Template' => \AtomPie\AnnotationTag\Template::class
             );
 
             $oParser = new AnnotationParser();
-            $aAnnotationCollection = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $aDefaultComponentClassAnnotations,
                 $this
             );
-            /** @var Annotation\Tag\Template $oTemplateTag */
-            $oTemplateTag = AnnotationTag::getAnnotationByType($aAnnotationCollection, Annotation\Tag\Template::class);
+            /** @var \AtomPie\AnnotationTag\Template $oTemplateTag */
+            $oTemplateTag = $oAnnotations->getFirstAnnotationByType(\AtomPie\AnnotationTag\Template::class);
 
             // Template annotation is required while rendering.
 

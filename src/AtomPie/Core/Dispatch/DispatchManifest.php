@@ -29,6 +29,13 @@ namespace AtomPie\Core\Dispatch {
          */
         private $oConfig;
 
+        /**
+         * DispatchManifest constructor.
+         * @param IAmFrameworkConfig $oConfig
+         * @param IAmEndPointValue $oEndPointSpec
+         * @param IAmEventSpecImmutable|null $oEventSpec
+         * @internal 
+         */
         public function __construct(
             IAmFrameworkConfig $oConfig,
             IAmEndPointValue $oEndPointSpec,

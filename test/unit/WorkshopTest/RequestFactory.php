@@ -2,7 +2,6 @@
 namespace WorkshopTest {
 
     use AtomPie\Core\Dispatch\DispatchManifest;
-    use AtomPie\Web\Environment;
     use AtomPie\Web\Connection\Http\Request;
 
     class RequestFactory

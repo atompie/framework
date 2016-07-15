@@ -13,7 +13,7 @@ namespace AtomPie\System {
         public function __construct($sRoutesPath)
         {
             if (!is_file($sRoutesPath)) {
-                throw new Exception(sprintf('[%s] if not file.', $sRoutesPath));
+                throw new Exception(sprintf('[%s] is not file.', $sRoutesPath));
             }
 
             $this->sRoutesPath = $sRoutesPath;

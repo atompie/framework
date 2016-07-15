@@ -1,9 +1,6 @@
 <?php
 namespace AtomPie\Annotation {
 
-    use AtomPie\Html\Attribute;
-    use AtomPie\Html\Attributes;
-
     class AnnotationParser
     {
 
@@ -11,7 +8,7 @@ namespace AtomPie\Annotation {
 
         /**
          * @param $sPhpDoc
-         * @return array|null
+         * @return array |null
          */
         public function parse($sPhpDoc)
         {
@@ -21,9 +18,7 @@ namespace AtomPie\Annotation {
                     // Annotation with attributes
                     if (preg_match_all('/@(?!property|param|return)(.*)\((.*)\)/i', $sLine, $aAnnotations)) {
                         foreach ($aAnnotations[1] as $sKey => $sAnnotation) {
-                            $oAnnotation = new AnnotationLine();
-                            $oAnnotation->ClassName = $sAnnotation;
-                            $oAnnotation->Attributes = new Attributes();
+                            $oAnnotationLine = new AnnotationLine($sAnnotation);
                             // Not empty attributes - add
                             if (!empty($aAnnotations[2][$sKey])) {
                                 $sAttributesLine = $aAnnotations[2][$sKey];
@@ -32,20 +27,18 @@ namespace AtomPie\Annotation {
                                     foreach ($aMatches[0] as $iMatchKey => $sAttributeLine) {
                                         $sName = trim($aMatches[1][$iMatchKey]);
                                         $sValue = trim($aMatches[2][$iMatchKey]);
-                                        $oAnnotation->Attributes->addAttribute(new Attribute($sName, $sValue));
+                                        $oAnnotationLine->Attributes->addAttribute(new Attribute($sName, $sValue));
                                     }
                                 }
 
                             }
-                            $aCollection[trim($sAnnotation)][] = $oAnnotation;
+                            $aCollection[trim($sAnnotation)][] = $oAnnotationLine;
                         }
                     } else {
                         if (preg_match_all('/@(?!property|param|return)(.*)/i', $sLine, $aAnnotations)) {
                             foreach ($aAnnotations[1] as $sAnnotation) {
-                                $oAnnotation = new AnnotationLine();
-                                $oAnnotation->ClassName = $sAnnotation;
-                                $oAnnotation->Attributes = new Attributes();
-                                $aCollection[trim($sAnnotation)][] = $oAnnotation;
+                                $oAnnotationLine = new AnnotationLine($sAnnotation);
+                                $aCollection[trim($sAnnotation)][] = $oAnnotationLine;
                             }
                         }
                     }
@@ -67,11 +60,14 @@ namespace AtomPie\Annotation {
         {
             $aAnnotationCollection = array();
             foreach ($aAnnotations as $sName => $aAnnotationsLines) {
-                foreach ($aAnnotationsLines as $oAnnotation) {
+                /**
+                 * @var $oAnnotationLine AnnotationLine
+                 */
+                foreach ($aAnnotationsLines as $oAnnotationLine) {
                     if (isset($aAnnotationMapping[$sName])) {
                         $sIndex = $aAnnotationMapping[$sName];
                         $sAnnotationClass = '\\' . $aAnnotationMapping[$sName];
-                        $aAnnotationCollection[$sIndex][] = new $sAnnotationClass($oAnnotation->Attributes);
+                        $aAnnotationCollection[$sIndex][] = new $sAnnotationClass($oAnnotationLine->Attributes);
                     }
                 }
             }
@@ -81,7 +77,7 @@ namespace AtomPie\Annotation {
         /**
          * @param $sPhpDoc
          * @param array $aAnnotationClassMapping
-         * @return array
+         * @return AnnotationTags
          */
         public function getAnnotations($sPhpDoc, array $aAnnotationClassMapping)
         {
@@ -106,7 +102,7 @@ namespace AtomPie\Annotation {
                 self::$aAnnotationRepository[$sCacheIndex] = $aAnnotationCollection;
             }
 
-            return self::$aAnnotationRepository[$sCacheIndex];
+            return new AnnotationTags(self::$aAnnotationRepository[$sCacheIndex]);
 
         }
 
@@ -114,8 +110,7 @@ namespace AtomPie\Annotation {
          * @param array $aAllowedAnnotations
          * @param object|string|\ReflectionClass $mObject
          * @param string|null $sMethod
-         * @return null|\AtomPie\Annotation\AnnotationTag[]|array
-         * @throws Exception
+         * @return AnnotationTags
          */
         public function getAnnotationsFromObjectOrMethod(array $aAllowedAnnotations, $mObject, $sMethod = null)
         {
@@ -134,12 +129,12 @@ namespace AtomPie\Annotation {
                 $sPhpDoc = $oThisClass->getMethod($sMethod)->getDocComment();
             } else {
                 // Not method or function
-                return null;
+                return new AnnotationTags([]);
             }
 
             // No phpdoc
             if ($sPhpDoc == false) {
-                return null;
+                return new AnnotationTags([]);
             }
 
             return $this->getAnnotations($sPhpDoc, $aAllowedAnnotations);

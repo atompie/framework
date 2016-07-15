@@ -2,8 +2,8 @@
 namespace WorkshopTest\Resource\UseCase {
 
     use Generi\Object;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Header;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Header;
     use AtomPie\Web\Boundary\IAmSession;
     use AtomPie\Web\CookieJar;
     use WorkshopTest\Resource\Param\MyParam1;

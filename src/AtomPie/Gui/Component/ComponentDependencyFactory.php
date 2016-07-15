@@ -4,7 +4,7 @@ namespace AtomPie\Gui\Component {
     use AtomPie\Annotation\AnnotationParser;
     use AtomPie\Web\Boundary\IPersistParamState;
     use AtomPie\DependencyInjection\Boundary\IAmDependencyMetaData;
-    use AtomPie\Gui\Component\Annotation\Tag\SaveState;
+    use AtomPie\AnnotationTag\SaveState;
     use AtomPie\Web\Boundary\IAmRequest;
 
     class ComponentDependencyFactory
@@ -33,11 +33,11 @@ namespace AtomPie\Gui\Component {
             );
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod($aAnnotationMapping, $sClassType, $sMethod);
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod($aAnnotationMapping, $sClassType, $sMethod);
 
             return $oParamFactory->factoryComponentParamFromRequest(
                 $oRequest,
-                $aAnnotations,
+                $oAnnotations,
                 $oClassOfParameter,
                 $oParameter,
                 $oStatePersister

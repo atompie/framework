@@ -4,13 +4,12 @@ namespace WorkshopTest;
 require_once __DIR__ . '/../Config.php';
 
 use AtomPie\Annotation\AnnotationParser;
-use AtomPie\Annotation\AnnotationTag;
-use AtomPie\Core\Annotation\Tag\Authorize;
-use AtomPie\Core\Annotation\Tag\Client;
-use AtomPie\Core\Annotation\Tag\EndPoint;
-use AtomPie\Core\Annotation\Tag\Header;
-use AtomPie\Core\Annotation\Tag\Log;
-use AtomPie\Core\Annotation\Tag\SaveState;
+use AtomPie\AnnotationTag\Authorize;
+use AtomPie\AnnotationTag\Client;
+use AtomPie\AnnotationTag\EndPoint;
+use AtomPie\AnnotationTag\Header;
+use AtomPie\AnnotationTag\Log;
+use AtomPie\AnnotationTag\SaveState;
 
 /**
  * Class Annotated
@@ -51,12 +50,12 @@ class ClassAnnotationsTest extends \PHPUnit_Framework_TestCase
         );
 
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             $aDefaultAnnotationMapping,
             new Annotated()
         );
 
-        $aHeaders = AnnotationTag::getAnnotationByType($aAnnotations, Header::class);
+        $aHeaders = $oAnnotations->getFirstAnnotationByType(Header::class);
         foreach ($aHeaders as $oAnnotation) {
             if (isset($oAnnotation->ContentType)) {
                 $this->assertTrue($oAnnotation->ContentType == 'application/json');
@@ -90,18 +89,18 @@ class ClassAnnotationsTest extends \PHPUnit_Framework_TestCase
         );
 
         $oParser = new AnnotationParser();
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             $aDefaultAnnotationMapping,
             new Annotated()
         );
 
-        $this->assertTrue($aAnnotations[Authorize::class][0] instanceof Authorize);
+        $this->assertTrue($oAnnotations[Authorize::class][0] instanceof Authorize);
 
-        $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+        $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
             $aDefaultAnnotationMapping,
             new Annotated()
         );
 
-        $this->assertTrue($aAnnotations[Authorize::class][0] instanceof Authorize);
+        $this->assertTrue($oAnnotations[Authorize::class][0] instanceof Authorize);
     }
 }

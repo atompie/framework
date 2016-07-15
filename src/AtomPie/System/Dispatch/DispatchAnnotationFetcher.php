@@ -2,13 +2,12 @@
 namespace AtomPie\System\Dispatch {
 
     use AtomPie\Annotation\AnnotationParser;
-    use AtomPie\Annotation\AnnotationTag;
-    use AtomPie\Core\Annotation\Tag\Authorize;
-    use AtomPie\Core\Annotation\Tag\Client;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Log;
-    use AtomPie\Core\Annotation\Tag\SaveState;
-    use AtomPie\Core\Annotation\Tag\Header;
+    use AtomPie\AnnotationTag\Authorize;
+    use AtomPie\AnnotationTag\Client;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Log;
+    use AtomPie\AnnotationTag\SaveState;
+    use AtomPie\AnnotationTag\Header;
 
     /**
      * Class AnnotationHandler
@@ -30,71 +29,70 @@ namespace AtomPie\System\Dispatch {
         /**
          * @param $mObject
          * @param $sMethod
-         * @return Client | null
+         * @return \AtomPie\AnnotationTag\Client | null
          */
         public function getClientAnnotation($mObject, $sMethod = null)
         {
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $this->aDefaultAnnotationMapping,
                 $mObject,
                 $sMethod
             );
 
-            return AnnotationTag::getAnnotationByType($aAnnotations, Client::class);
+            return $oAnnotations->getFirstAnnotationByType(Client::class);
         }
 
         /**
          * @param mixed $mObject
-         * @return EndPoint | null
+         * @return \AtomPie\AnnotationTag\EndPoint | null
          */
         public function getEndPointClassAnnotation($mObject)
         {
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $this->aDefaultAnnotationMapping,
                 $mObject
             );
 
-            return AnnotationTag::getAnnotationByType($aAnnotations, EndPoint::class);
+            return $oAnnotations->getFirstAnnotationByType(EndPoint::class);
         }
 
         /**
          * @param mixed $mObject
          * @param string $sMethod
-         * @return \AtomPie\Core\Annotation\Tag\EndPoint | null
+         * @return \AtomPie\AnnotationTag\EndPoint | null
          */
         public function getEndPointAnnotation($mObject, $sMethod)
         {
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $this->aDefaultAnnotationMapping,
                 $mObject,
                 $sMethod
             );
 
-            return AnnotationTag::getAnnotationByType($aAnnotations, EndPoint::class);
+            return $oAnnotations->getFirstAnnotationByType(EndPoint::class);
         }
 
         /**
          * @param $mObject
          * @param string|null $sMethod
-         * @return \AtomPie\Core\Annotation\Tag\Header[] | null
+         * @return \AtomPie\AnnotationTag\Header[] | null
          */
         public function getHeaderAnnotation($mObject, $sMethod = null)
         {
-
             $oParser = new AnnotationParser();
-            $aAnnotationCollection = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $this->aDefaultAnnotationMapping,
                 $mObject,
                 $sMethod
             );
 
-            return AnnotationTag::getAnnotationsByType($aAnnotationCollection, Header::class);
+            return $oAnnotations->getAnnotationsByType(Header::class);
 
         }
 

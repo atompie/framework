@@ -1,7 +1,6 @@
 <?php
 namespace AtomPie\System {
 
-    use AtomPie\DependencyInjection\DependencyContainer;
     use Composer\Autoload\ClassLoader;
     use AtomPie\EventBus\EventHandler;
     use AtomPie\Boundary\Core\IAmFrameworkConfig;
@@ -30,6 +29,7 @@ namespace AtomPie\System {
         use EventHandler;
 
         const EVENT_APPLICATION_BOOT = '@ApplicationBoot';
+        const EVENT_KERNEL_BOOT = '@KernelBoot';
 
         /**
          * @var array
@@ -57,26 +57,27 @@ namespace AtomPie\System {
         private $oBootstrap;
 
         public function __construct(
-            IAmFrameworkConfig $oConfig,
-            IAmEnvironment $oEnvironment,
-            array $aMiddleWares = null,
-            ClassLoader $oClassLoader = null
+            IAmEnvironment $oEnvironment
+            , ClassLoader $oClassLoader = null
         ) {
-
-            $this->aMiddleWares = $aMiddleWares;
-            $this->oConfig = $oConfig;
             $this->oEnvironment = $oEnvironment;
             $this->oClassLoader = $oClassLoader;
-            $this->oBootstrap = new Bootstrap($oConfig, $oEnvironment);
         }
-
+        
         public function boot(
-            array $aContentProcessors = [],
-            DependencyContainer $oCustomDependencyContainer = null,
-            IHandleException $oErrorRenderer = null
+            IAmFrameworkConfig $oConfig
         ) {
 
+            $oCustomDependencyContainer = null;
+
+            $this->aMiddleWares = $oConfig->getMiddleware();
+            $this->oConfig = $oConfig;
+            
+            $this->oBootstrap = new Bootstrap($oConfig, $this->oEnvironment);
+
             $oResponse = $this->oEnvironment->getResponse();
+
+            $this->triggerEvent(self::EVENT_KERNEL_BOOT, $this);
 
             try {
 
@@ -94,7 +95,7 @@ namespace AtomPie\System {
                 $oApplication = $this->oBootstrap->initApplication(
                     $oDispatchManifest,
                     $oCustomDependencyContainer,
-                    $aContentProcessors
+                    $oConfig->getContentProcessors()
                 );
 
                 $this->triggerEvent(self::EVENT_APPLICATION_BOOT, $oApplication);
@@ -103,9 +104,11 @@ namespace AtomPie\System {
 
             } catch (\Exception $oException) {
 
+                $oErrorRenderer = $oConfig->getErrorHandler();
+                
                 if ($oErrorRenderer == null) {
                     // Default value
-                    $oErrorRenderer = new DefaultErrorHandler();
+                    $oErrorRenderer = new DefaultErrorHandler(true);
                 }
 
                 $oResponse = $this->handleError(

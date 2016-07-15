@@ -3,7 +3,7 @@ namespace AtomPie\System\DependencyContainer {
 
     use AtomPie\Boundary\Core\Dispatch\IAmDispatchManifest;
     use AtomPie\Boundary\Core\Dispatch\IProvideUrl;
-    use AtomPie\Boundary\Core\IAmApplicationConfig;
+    use AtomPie\Boundary\Config\IAmApplicationConfig;
     use AtomPie\Boundary\Core\IAmService;
     use AtomPie\Boundary\Core\IAmFrameworkConfig;
     use AtomPie\DependencyInjection\Boundary\IAmDependencyMetaData;
@@ -11,6 +11,7 @@ namespace AtomPie\System\DependencyContainer {
     use AtomPie\DependencyInjection\DependencyContainer;
     use AtomPie\Core\Service\RequestParamService;
     use AtomPie\Web\Boundary\IAmEnvironment;
+    use AtomPie\Web\Boundary\IAmRequest;
     use AtomPie\Web\Boundary\IAmSession;
     use AtomPie\Web\Boundary\IUploadFile;
     use AtomPie\Web\Connection\Http\Request;
@@ -18,6 +19,10 @@ namespace AtomPie\System\DependencyContainer {
     use AtomPie\Web\Connection\Http\UploadFile;
     use AtomPie\Web\Connection\Http\Url\Param;
 
+    /**
+     * Class EndPointDependencyContainer
+     * @package AtomPie\System\DependencyContainer
+     */
     class EndPointDependencyContainer extends DependencyContainer
     {
 
@@ -28,6 +33,7 @@ namespace AtomPie\System\DependencyContainer {
          * @param IAmDispatchManifest $oDispatchManifest
          * @param IProvideUrl $oThisEndPointUrl
          * @throws \AtomPie\DependencyInjection\Exception
+         * @internal
          */
         public function __construct(
             IAmEnvironment $oEnvironment,
@@ -74,7 +80,7 @@ namespace AtomPie\System\DependencyContainer {
                     IAmApplicationConfig::class => function () use ($oConfig) {
                         return $oConfig->getAppConfig();
                     },
-                    Request::class => function () use ($oEnvironment) {
+                    IAmRequest::class => function () use ($oEnvironment) {
                         return $oEnvironment->getRequest();
                     },
                     Response::class => function () use ($oEnvironment) {

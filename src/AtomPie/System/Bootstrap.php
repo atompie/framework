@@ -2,8 +2,10 @@
 namespace AtomPie\System {
 
     use AtomPie\Boundary\Core\IAmFrameworkConfig;
+    use AtomPie\Boundary\Core\ISetUpContentProcessor;
     use AtomPie\Core\Dispatch\DispatchManifest;
     use AtomPie\DependencyInjection\DependencyContainer;
+    use AtomPie\EventBus\Exception;
     use AtomPie\System\IO\File;
     use AtomPie\Web\Boundary\IAmEnvironment;
     use AtomPie\Web\Connection\Http\Header;
@@ -43,9 +45,9 @@ namespace AtomPie\System {
          *
          * @param DispatchManifest $oDispatchManifest
          * @param DependencyContainer $oCustomDependencyContainer
-         * @param \AtomPie\Boundary\Core\ISetUpContentProcessor[] $aContentProcessors
+         * @param ISetUpContentProcessor[] $aContentProcessors
          * @return Application
-         * @throws \AtomPie\EventBus\Exception
+         * @throws Exception
          */
         public function initApplication(
             DispatchManifest $oDispatchManifest,

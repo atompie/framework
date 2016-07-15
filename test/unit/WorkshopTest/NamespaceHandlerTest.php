@@ -3,9 +3,11 @@ namespace WorkshopTest;
 
 use AtomPie\Core\FrameworkConfig;
 use AtomPie\Core\NamespaceHandler;
-use AtomPie\System\Router;
+use AtomPie\System\EndPointConfig;
+use AtomPie\System\EventConfig;
+use AtomPie\System\Namespaces;
 use AtomPie\Web\Environment;
-use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 use WorkshopTest\Resource\EndPoint\DefaultController;
 
 class NamespaceHandlerTest extends \PHPUnit_Framework_TestCase
@@ -21,24 +23,28 @@ class NamespaceHandlerTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $oEnvironment = Environment::getInstance();
         $this->oConfig = new FrameworkConfig(
+            'Main',
+            new EndPointConfig(
+                new Namespaces([
+                    "\\WorkshopTest\\Resource\\EndPoint",
+                    "\\WorkshopTest\\Resource\\Component",
+                    'WorkshopTest\Resource\Operation',
+                ]),
+                new Namespaces([
+                    'Test1\\Class4',
+                    "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
+                ])
+            ),
+            new ApplicationConfigSwitcher($oEnvironment->getEnv()),
             $oEnvironment,
-            new Router(__DIR__.'/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__ . '/../../../',
-            __DIR__ . '/../../../WorkshopTest/Resource/Theme',
-            [
-                "\\WorkshopTest\\Resource\\EndPoint",
-                "\\WorkshopTest\\Resource\\Component",
-                'WorkshopTest\Resource\Operation',
-            ],
-            [
-                "\\WorkshopTest\\Resource\\Component",
-                "\\WorkshopTest\\Resource"
-            ],
-            [
-                'Test1\\Class4',
-                "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
-            ]
+            [],[],[],
+            null,
+            new EventConfig(
+                new Namespaces([
+                    "\\WorkshopTest\\Resource\\Component",
+                    "\\WorkshopTest\\Resource"
+                ])
+            )
         );
     }
 

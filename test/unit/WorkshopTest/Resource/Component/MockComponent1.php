@@ -7,9 +7,9 @@ require_once __DIR__ . '/../Param/MyParam2.php';
 require_once __DIR__ . '/../Param/MyParam3.php';
 
 use AtomPie\Gui\Component;
-use AtomPie\Gui\Component\Annotation\Tag\Template;
-use AtomPie\Core\Annotation\Tag\Client;
-use AtomPie\Core\Annotation\Tag\EndPoint;
+use AtomPie\AnnotationTag\Template;
+use AtomPie\AnnotationTag\Client;
+use AtomPie\AnnotationTag\EndPoint;
 use WorkshopTest\Resource\Param\MyParam1;
 use WorkshopTest\Resource\Param\MyParam2;
 use WorkshopTest\Resource\Param\MyParam3;

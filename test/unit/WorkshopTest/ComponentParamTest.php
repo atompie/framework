@@ -3,7 +3,6 @@ namespace WorkshopTest;
 
 @session_start();
 
-use AtomPie\Web\Environment;
 use AtomPie\Gui\Component\ComponentParam;
 use AtomPie\Gui\Component\ComponentParamSessionKey;
 use AtomPie\Gui\Component\Params;

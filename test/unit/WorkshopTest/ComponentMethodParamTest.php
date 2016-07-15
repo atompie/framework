@@ -43,7 +43,7 @@ class ComponentMethodParamTest extends \PHPUnit_Framework_TestCase
 
     public function testParam_NotInRequest()
     {
-        $this->setExpectedException(Param\ParamException::class);
+        $this->expectException(Param\ParamException::class);
         $oComponent = new MockComponent1(Part::TOP_COMPONENT_NAME);
         $oInvoker = new FactoryTreeInvoker();
         $oInvoker->invokeFactoryForComponent(
@@ -120,7 +120,7 @@ class ComponentMethodParamTest extends \PHPUnit_Framework_TestCase
             $oComponent
         );
 
-        $this->setExpectedException(Param\ParamException::class);
+        $this->expectException(Param\ParamException::class);
         $oDependencyInjector = new DependencyInjector(Boot::getEndPointDi());
         $oDependencyInjector->invokeMethod($oComponent, 'test1');
 

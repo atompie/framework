@@ -1,7 +1,7 @@
 <?php
 namespace AtomPiePhpUnitTest\Annotation\Mock {
 
-    use AtomPie\Annotation\AnnotationTag;
+    use AtomPie\AnnotationTag\AnnotationTag;
 
     class TestAnnotation1 extends AnnotationTag
     {

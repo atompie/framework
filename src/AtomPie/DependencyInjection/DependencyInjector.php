@@ -5,6 +5,7 @@ namespace AtomPie\DependencyInjection {
     use AtomPie\DependencyInjection\Boundary\ICanInvokeDependentClasses;
     use AtomPie\DependencyInjection\Boundary\IConstructInjection;
     use AtomPie\I18n\Label;
+    use AtomPie\System\ContractFillers;
 
     class DependencyInjector implements ICanInvokeDependentClasses
     {
@@ -22,10 +23,20 @@ namespace AtomPie\DependencyInjection {
          * @var \ReflectionClass
          */
         private $oReflectionClass;
+        /**
+         * @var ContractFillers
+         */
+        private $oContactFillers;
 
-        public function __construct(IConstructInjection $oContainer)
+        /**
+         * DependencyInjector constructor.
+         * @param IConstructInjection $oContainer
+         * @param ContractFillers $oContactFillers
+         */
+        public function __construct(IConstructInjection $oContainer, ContractFillers $oContactFillers = null)
         {
             $this->oContainer = $oContainer;
+            $this->oContactFillers = $oContactFillers;
         }
 
         public function invokeClosure($sClosureId, \Closure $pClosure, array $aCustomDependency = null)
@@ -161,17 +172,26 @@ namespace AtomPie\DependencyInjection {
 
                 if (!empty($aDependencies)) {
 
-                    $oInjectionClass = new \ReflectionClass($sInjectionTypeName);
-                    $sInjectionClassName = $oInjectionClass->name;
-                    foreach ($aDependencies as $sDependantType => $pDependencyClosure) {
-                        if ($sDependantType == Dependency::TYPE_LESS) {
+                    $oInjectionReflectionClass = new \ReflectionClass($sInjectionTypeName);
+                    foreach ($aDependencies as $sInjectionTypeHint => $pDependencyClosure) {
+                        if ($sInjectionTypeHint == Dependency::TYPE_LESS) {
                             continue;
                         }
-                        if ($sInjectionClassName == $sDependantType or $oInjectionClass->isSubclassOf($sDependantType)) {
 
+                        $sContractFillerClassName = $this->replaceWithContractFillerIfExists(
+                            $sInjectionTypeHint
+                            , $sClassType
+                            , $sMethod);
+
+                        // Is correct type for injection?
+                        if(
+                            $oInjectionReflectionClass->name == $sContractFillerClassName 
+                            || $oInjectionReflectionClass->isSubclassOf($sContractFillerClassName)
+                        ) {
+                        
                             $oObject = $this->oObject;
 
-                            $oInjector = new DependencyInjector($oContainer);
+                            $oInjector = new DependencyInjector($oContainer, $this->oContactFillers);
 
                             return $oInjector->invokeClosure(
                                 self::DEPENDENCY_CONTAINER_CLOSURE,
@@ -203,18 +223,26 @@ namespace AtomPie\DependencyInjection {
             
             // Factory method
 
-            if(method_exists($sInjectionTypeName, '__build')) {
-                return forward_static_call_array([$sInjectionTypeName, '__build'],[]);
+            $sContractClassName = $this->replaceWithContractFillerIfExists(
+                $sInjectionTypeName
+                , $sClassType
+                , $sMethod);
+            
+            if(!method_exists($sContractClassName, '__build')) {
+                throw new Exception(sprintf(
+                        new Label('Error while trying to invoke [%s:%s] dependency injection. Please check if factory method __build() exists.'),
+                        $sInjectionTypeName,
+                        $sClassType,
+                        $sMethod
+                    )
+                );
             }
+            
+            // Constrain build throws exception
+            $this->constrainBuild($sClassType, $sInjectionTypeName);
 
-            throw new Exception(sprintf(
-                    new Label('Could not inject class [%s] while trying to invoke [%s:%s]. [%s] does not match any of the defined class types and has not factory method __build().'),
-                    $sInjectionTypeName,
-                    $sClassType,
-                    $sMethod,
-                    $sInjectionTypeName
-                )
-            );
+            $oInjector = new DependencyInjector($oContainer, $this->oContactFillers);
+            return $oInjector->invokeMethod($sContractClassName, '__build');
 
         }
 
@@ -351,6 +379,59 @@ namespace AtomPie\DependencyInjection {
                     $oParameter
                 )
             );
+        }
+
+        /**
+         * @param $sClassType
+         * @param $sInjectionTypeName
+         * @throws Exception
+         */
+        private function constrainBuild($sClassType, $sInjectionTypeName)
+        {
+            if (method_exists($sInjectionTypeName, '__constrainBuild')) {
+                $aConstrainMapping = forward_static_call([$sInjectionTypeName, '__constrainBuild']);
+                
+                if(!is_array($aConstrainMapping)) {
+                    throw new Exception(
+                        new Label('Method __constrainBuild must return array of allowed classes that can use this factory method')
+                    );
+                }
+                
+                if (!in_array($sClassType, $aConstrainMapping)) {
+                    throw new Exception(
+                        sprintf(
+                            new Label('__build method is not allowed to be used outside following classes %s'),
+                            implode(',', $aConstrainMapping)
+                        )
+                    );
+                }
+            }
+        }
+
+        /**
+         * @param $sInjectionTypeName
+         * @param $sClassType
+         * @param $sMethod
+         * @return string
+         */
+        private function replaceWithContractFillerIfExists($sInjectionTypeName, $sClassType, $sMethod)
+        {
+            // No contract fillers
+            if($this->oContactFillers == null) {
+                return $sInjectionTypeName;
+            }
+            
+            // There are contact fillers
+            $sContractFillerClass = $this->oContactFillers->getContractFillerFor(
+                $sInjectionTypeName
+                , $sClassType
+                , $sMethod
+            );
+
+            return ($sContractFillerClass === null)
+                ? $sInjectionTypeName
+                : $sContractFillerClass;
+            
         }
 
     }

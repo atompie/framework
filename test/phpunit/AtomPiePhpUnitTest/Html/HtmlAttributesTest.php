@@ -61,7 +61,7 @@ class HtmlAttributesTest extends \PHPUnit_Framework_TestCase
 
     public function testAttribute_ArrayAccess_Exception()
     {
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oAttributes = new Attributes();
         $oAttributes[] = 'aaa';
     }

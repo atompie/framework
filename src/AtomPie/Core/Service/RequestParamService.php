@@ -1,16 +1,16 @@
 <?php
 namespace AtomPie\Core\Service {
 
-    use AtomPie\Core\Annotation\Tag\Authorize;
-    use AtomPie\Core\Annotation\Tag\Client;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Header;
-    use AtomPie\Core\Annotation\Tag\Log;
+    use AtomPie\Annotation\AnnotationTags;
+    use AtomPie\AnnotationTag\Authorize;
+    use AtomPie\AnnotationTag\Client;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Header;
+    use AtomPie\AnnotationTag\Log;
     use Generi\Boundary\IAmKeyValueStore;
     use AtomPie\Annotation\AnnotationParser;
-    use AtomPie\Annotation\AnnotationTag;
     use AtomPie\DependencyInjection\Boundary\IAmDependencyMetaData;
-    use AtomPie\Core\Annotation\Tag\SaveState;
+    use AtomPie\AnnotationTag\SaveState;
     use AtomPie\Web\Boundary\IPersistParamState;
     use AtomPie\Web\Connection\Http\Url\Param;
     use AtomPie\Web\Connection\Http\Url\Param\ParamException;
@@ -44,28 +44,12 @@ namespace AtomPie\Core\Service {
 
             $oParamFactory = new self($oMeta->getCalledFunctionMetaData());
 
-            $oStatePersister = new ParamStatePersister($oEnvironment->getSession(), $sParamNamespace);
+            $oStateSaver = new ParamStatePersister($oEnvironment->getSession(), $sParamNamespace);
             return $oParamFactory->factoryTypeLessGlobalParamFromRequest(
                 $oEnvironment->getRequest(),
                 $oMeta,
-                $oStatePersister
+                $oStateSaver
             );
-
-        }
-
-        /**
-         * @param $aAnnotations
-         * @return SaveState | bool
-         */
-        private function getSaveStateAnnotation($aAnnotations)
-        {
-
-            if (!empty($aAnnotations) && isset($aAnnotations[SaveState::class])) {
-                reset($aAnnotations[SaveState::class]);
-                return current($aAnnotations[SaveState::class]);
-            }
-
-            return false;
 
         }
 
@@ -114,15 +98,15 @@ namespace AtomPie\Core\Service {
             );
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $aDefaultAnnotationMapping,
                 $sClassType,
                 $sMethod
             );
 
-            $oSaveState = $this->getSaveStateAnnotation($aAnnotations);
+            $oSaveState = $oAnnotations->getFirstAnnotationByType(SaveState::class);
 
-            if ($oSaveState !== false) {
+            if ($oSaveState !== null) {
 
                 $bHasParamStateSaved = $oStatePersister->hasState($sParamName);
 
@@ -182,7 +166,7 @@ namespace AtomPie\Core\Service {
             $sParamType = $oParameter->getClass()->getName();
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $aDefaultAnnotationMapping,
                 $sClassType,
                 $sMethod
@@ -194,7 +178,7 @@ namespace AtomPie\Core\Service {
 
             return $oParamFactory->factoryGlobalParam(
                 $mParamValue,
-                $aAnnotations,
+                $oAnnotations,
                 $sParamType,
                 $oParameter,
                 $oStatePersister
@@ -203,7 +187,7 @@ namespace AtomPie\Core\Service {
 
         /**
          * @param $mParamValue
-         * @param $aAnnotations
+         * @param $oAnnotations
          * @param $sParamType
          * @param \ReflectionParameter $oEndPointParameter
          * @param \AtomPie\Web\Boundary\IPersistParamState $oStatePersister
@@ -212,14 +196,14 @@ namespace AtomPie\Core\Service {
          */
         public function factoryGlobalParam(
             $mParamValue,
-            $aAnnotations,
+            AnnotationTags $oAnnotations,
             $sParamType,
             \ReflectionParameter $oEndPointParameter,
             IPersistParamState $oStatePersister
         ) {
 
             // Param in request
-            $oSaveState = AnnotationTag::getAnnotationByType($aAnnotations, SaveState::class);
+            $oSaveState = $oAnnotations->getFirstAnnotationByType(SaveState::class);
 
             if ($mParamValue !== null) {
 
@@ -285,7 +269,7 @@ namespace AtomPie\Core\Service {
             );
 
             $oParser = new AnnotationParser();
-            $aAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
+            $oAnnotations = $oParser->getAnnotationsFromObjectOrMethod(
                 $aDefaultAnnotationMapping,
                 $oMeta->getCalledFunctionMetaData()
             );
@@ -297,7 +281,7 @@ namespace AtomPie\Core\Service {
 
             return $oParamFactory->factoryGlobalParam(
                 $mParamValue,
-                $aAnnotations,
+                $oAnnotations,
                 $sParamType,
                 $oParameter,
                 $oStatePersister

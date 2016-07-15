@@ -1,7 +1,7 @@
 <?php
 namespace AtomPieTestAssets\Resource\Mock {
 
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\EndPoint;
     use AtomPie\Core\FrameworkConfig;
     use AtomPie\System\IO\File;
     use AtomPie\Web\Connection\Http\Header\Status;
@@ -27,11 +27,26 @@ namespace AtomPieTestAssets\Resource\Mock {
         }
     }
     
-    class DependentClass {
+    interface DependentClassInterface {
+        public function getData();
+    }
+    
+    class DependentClass implements DependentClassInterface {
+        public function getData() {
+            return 'Dependency-Injection-Container-Exists';
+        }
+        
+        static function __build() {
+            return new DependentClass();
+        }
+    }
+
+    class DependentClassNoBuild {
         public function getData() {
             return 'Dependency-Injection-Container-Exists';
         }
     }
+
 
     class FactoryMethodDependentClass {
         public function getData() {
@@ -94,6 +109,18 @@ namespace AtomPieTestAssets\Resource\Mock {
         /**
          * @EndPoint()
          * @param null $di
+         * @param DependentClassInterface $oDependentClass
+         * @return bool
+         */
+        public function indexWithDependencyInjectionAsInterface(
+            /* @noinspection PhpUnusedParameterInspection */
+            $di = null, DependentClassInterface $oDependentClass) {
+            return $oDependentClass->getData();
+        }
+
+        /**
+         * @EndPoint()
+         * @param null $di
          * @param FactoryMethodDependentClass $oDependentClass
          * @return bool
          */
@@ -106,12 +133,12 @@ namespace AtomPieTestAssets\Resource\Mock {
         /**
          * @EndPoint()
          * @param null $di
-         * @param DependentClass $oDependentClass
+         * @param DependentClassNoBuild $oDependentClass
          * @return bool
          */
         public function indexWithoutFactoryMethodDI(
             /* @noinspection PhpUnusedParameterInspection */
-            $di = null, DependentClass $oDependentClass) {
+            $di = null, DependentClassNoBuild $oDependentClass) {
             return $oDependentClass->getData();
         }
 

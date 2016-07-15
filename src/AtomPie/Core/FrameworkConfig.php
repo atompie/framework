@@ -1,24 +1,22 @@
 <?php
 namespace AtomPie\Core {
 
-    use AtomPie\Boundary\Core\IAmApplicationConfigDefinition;
+    use AtomPie\Boundary\Core\IAmApplicationConfigSwitcher;
     use AtomPie\Boundary\Core\IAmFrameworkConfig;
+    use AtomPie\Boundary\Core\ISetUpContentProcessor;
+    use AtomPie\Boundary\System\IAmEnvVariable;
     use AtomPie\Boundary\System\IAmRouter;
-    use AtomPie\Core\Config\ApplicationConfigProvider;
+    use AtomPie\Boundary\System\IHandleException;
+    use AtomPie\Boundary\System\IRunAfterMiddleware;
+    use AtomPie\Boundary\System\IRunBeforeMiddleware;
+    use AtomPie\Boundary\Config\IAmApplicationConfig;
+    use AtomPie\System\ContractFillers;
+    use AtomPie\System\EndPointConfig;
+    use AtomPie\System\EventConfig;
     use AtomPie\Web\Boundary\IAmEnvironment;
 
     final class FrameworkConfig implements IAmFrameworkConfig
     {
-
-        const VARIABLE_ENV = 'ATOMPIE_ENV';
-        const DEFAULT_ENV = 'default';
-
-        private $aEndPointNamespaces = [];
-        private $aEndPointClasses = [];
-        private $aEventNamespaces = [];
-        private $aEventClasses = [];
-        private $sRootFolder = __DIR__;
-        private $sViewFolder = __DIR__;
 
         /**
          * @var string
@@ -26,7 +24,7 @@ namespace AtomPie\Core {
         private $sDefaultEndPoint;
 
         /**
-         * @var
+         * @var IAmApplicationConfig
          */
         private $oAppConfig;
 
@@ -35,36 +33,113 @@ namespace AtomPie\Core {
          */
         private $oRouter;
 
+        /**
+         * @var ContractFillers
+         */
+        private $oContractFillers;
+        
+        /**
+         * @var IRunBeforeMiddleware[] | IRunAfterMiddleware[]
+         */
+        private $aMiddleware;
+        
+        /**
+         * @var EndPointConfig
+         */
+        private $oEndPointConfig;
+        
+        /**
+         * @var EventConfig
+         */
+        private $oEventConfig;
+        /**
+         * @var ISetUpContentProcessor[]
+         */
+        private $aContentProcessors;
+        
+        /**
+         * @var IHandleException
+         */
+        private $oErrorRenderer;
+
         public function __construct(
+            $sDefaultEndPoint,
+            EndPointConfig $oEndPointConfig,
+            IAmApplicationConfigSwitcher $oConfigSwitcher,
             IAmEnvironment $oEnvironment,
-            IAmRouter $oRouter,
-            IAmApplicationConfigDefinition $oConfigDefinition,
-            $sRootFolder,
-            $sViewFolder,
-            array $aEndPointNamespaces = [],
-            array $aEventNamespaces = [],
-            array $aEndPointClasses = [],
-            array $aEventClasses = [],
-            $sDefaultEndPoint = 'Main'
+            array $aContractFillers = [],
+            array $aMiddleware = [],
+            array $aContentProcessors = [],
+            IHandleException $oErrorRenderer = null,
+            EventConfig $oEventConfig = null,
+            IAmRouter $oRouter = null
         ) {
 
-            $this->sRootFolder = $sRootFolder;
-            $this->sViewFolder = $sViewFolder;
             $this->sDefaultEndPoint = $sDefaultEndPoint;
-            $this->aEndPointNamespaces = $aEndPointNamespaces;
-            $this->aEventNamespaces = $aEventNamespaces;
-            $this->aEndPointClasses = $aEndPointClasses;
-            $this->aEventClasses = $aEventClasses;
             $this->oRouter = $oRouter;
-            $this->oAppConfig = (new ApplicationConfigProvider($oConfigDefinition, $oEnvironment->getEnv()))->provide();
+            $this->oAppConfig = $this->provide($oConfigSwitcher, $oEnvironment->getEnv());
+            $this->oContractFillers = new ContractFillers($aContractFillers);
+            $this->aMiddleware = $aMiddleware;
+            $this->oEndPointConfig = $oEndPointConfig;
+            $this->oEventConfig = ($oEventConfig !== null) ? $oEventConfig : new EventConfig();
+            $this->aContentProcessors = $aContentProcessors;
+            $this->oErrorRenderer = $oErrorRenderer;
         }
+
+        /**
+         * Override in order to change the way you distinguish
+         * dev and production environments.
+         *
+         * @param IAmApplicationConfigSwitcher $oConfigSwitcher
+         * @param IAmEnvVariable $oEnvVariable
+         * @return IAmApplicationConfig
+         * @throws \Exception
+         */
+        private function provide(IAmApplicationConfigSwitcher $oConfigSwitcher, IAmEnvVariable $oEnvVariable)
+        {
+            $sLocalConfigClass = $oConfigSwitcher->localConfig();
+            if ($sLocalConfigClass !== null) {
+                // Local config
+                return $this->getConfig($sLocalConfigClass, $oEnvVariable);
+            }
+
+            // Default config
+            return $this->getConfig($oConfigSwitcher->defaultConfig(), $oEnvVariable);
+        }
+
+        /**
+         * @param $sLocalConfigClass
+         * @param IAmEnvVariable $oEnvVariable
+         * @return mixed
+         * @throws \Exception
+         */
+        private function getConfig($sLocalConfigClass, $oEnvVariable)
+        {
+            if (!class_exists($sLocalConfigClass)) {
+                throw new \Exception(
+                    sprintf(
+                        'Class [%s] does not exist. Config must provide ApplicationConfig class that exists.',
+                        $sLocalConfigClass
+                    )
+                );
+            }
+
+            $oConfig = new $sLocalConfigClass($oEnvVariable);
+
+            if (!$oConfig instanceof IAmApplicationConfig) {
+                throw new \Exception('Config must provide class that is child of \AtomPie\Boundary\Core\IAmApplicationConfig class.');
+            }
+
+            return $oConfig;
+        }
+
 
         /**
          * @return array
          */
         public function getEndPointNamespaces()
         {
-            return $this->aEndPointNamespaces;
+            return $this->oEndPointConfig->getEndPointNamespaces()->__toArray();
         }
 
         /**
@@ -72,25 +147,7 @@ namespace AtomPie\Core {
          */
         public function getEndPointClasses()
         {
-            return $this->aEndPointClasses;
-        }
-
-        /**
-         * @param $sNamespace
-         * @return bool
-         */
-        public function hasEndPointNamespace($sNamespace) {
-            return in_array($sNamespace, $this->aEndPointNamespaces);
-        }
-
-        /**
-         * @param $sNamespace
-         */
-        public function prependEndPointNamespace($sNamespace) {
-            array_unshift(
-                $this->aEndPointNamespaces,
-                $sNamespace
-            );
+            return $this->oEndPointConfig->getEndPointClasses()->__toArray();
         }
 
         /**
@@ -98,7 +155,7 @@ namespace AtomPie\Core {
          */
         public function getEventNamespaces()
         {
-            return $this->aEventNamespaces;
+            return $this->oEventConfig->getEventNamespaces()->__toArray();
         }
 
         /**
@@ -106,23 +163,7 @@ namespace AtomPie\Core {
          */
         public function getEventClasses()
         {
-            return $this->aEventClasses;
-        }
-
-        /**
-         * @return string
-         */
-        public function getRootFolder()
-        {
-            return $this->sRootFolder;
-        }
-
-        /**
-         * @return string
-         */
-        public function getViewFolder()
-        {
-            return $this->sViewFolder;
+            return $this->oEndPointConfig->getEndPointClasses()->__toArray();
         }
 
         /**
@@ -134,7 +175,7 @@ namespace AtomPie\Core {
         }
 
         /**
-         * @return mixed
+         * @return IAmApplicationConfig
          */
         public function getAppConfig()
         {
@@ -147,6 +188,38 @@ namespace AtomPie\Core {
         public function getRouter()
         {
             return $this->oRouter;
+        }
+
+        /**
+         * @return ContractFillers
+         */
+        public function getContractsFillers()
+        {
+            return $this->oContractFillers;
+        }
+
+        /**
+         * @return IRunAfterMiddleware[]|IRunBeforeMiddleware[]
+         */
+        public function getMiddleware()
+        {
+            return $this->aMiddleware;
+        }
+
+        /**
+         * @return ISetUpContentProcessor[]
+         */
+        public function getContentProcessors()
+        {
+            return $this->aContentProcessors;
+        }
+
+        /**
+         * @return IHandleException
+         */
+        public function getErrorHandler()
+        {
+            return $this->oErrorRenderer;
         }
     }
 

@@ -95,7 +95,7 @@ namespace WorkshopTest {
             $oComponent->handleEvent('event', function (MyParam1 $MyParam1) {
                 var_dump('222');
             });
-            $this->setExpectedException(ParamException::class);
+            $this->expectException(ParamException::class);
 
             $oComponent->triggerDependentEvent(
                 Boot::getComponentDi(),

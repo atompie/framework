@@ -1,4 +1,5 @@
 <phpunit
+        bootstrap="../../../vendor/autoload.php"
         colors="true"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
@@ -23,6 +24,8 @@
             <file>System/KernelTest.php</file>
             <file>System/NamespaceValueTest.php</file>
             <file>System/IO/FileTest.php</file>
+            <file>System/ContractTest.php</file>
+            <file>System/ContractFillersTest.php</file>
 
             <file>Gui/EndPointUrlTest.php</file>
             <file>Gui/TemplateAnnotationTest.php</file>

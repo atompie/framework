@@ -1,12 +1,12 @@
 <?php
 namespace AtomPie\Gui\Component {
 
-    use AtomPie\Annotation\AnnotationTag;
+    use AtomPie\Annotation\AnnotationTags;
     use Generi\Boundary\ICanBeIdentified;
     use Generi\Object;
     use AtomPie\Boundary\Gui\Component\IAmComponentParam;
     use AtomPie\Web\Boundary\IPersistParamState;
-    use AtomPie\Gui\Component\Annotation\Tag\SaveState;
+    use AtomPie\AnnotationTag\SaveState;
     use AtomPie\Web\Boundary\IAmRequest;
     use AtomPie\Web\Connection\Http\Header\Status;
     use AtomPie\Web\Connection\Http\Url\Param;
@@ -37,7 +37,7 @@ namespace AtomPie\Gui\Component {
 
         /**
          * @param IAmRequest $oRequest
-         * @param $aAnnotations
+         * @param $oAnnotations
          * @param \ReflectionClass $oClassOfParameter
          * @param \ReflectionParameter $oParameter
          * @param IPersistParamState $oStatePersister
@@ -47,7 +47,7 @@ namespace AtomPie\Gui\Component {
          */
         public function factoryComponentParamFromRequest(
             IAmRequest $oRequest,
-            $aAnnotations,
+            AnnotationTags $oAnnotations,
             \ReflectionClass $oClassOfParameter,
             \ReflectionParameter $oParameter,
             IPersistParamState $oStatePersister
@@ -67,7 +67,7 @@ namespace AtomPie\Gui\Component {
 
             $sParamType = $oClassOfParameter->name;
             /** @var SaveState $oSaveState */
-            $oSaveState = AnnotationTag::getAnnotationByType($aAnnotations, SaveState::class);
+            $oSaveState = $oAnnotations->getFirstAnnotationByType(SaveState::class);
             $aValueFromRequest = $this->getRequestComponentValue($oRequest, $sVariableName);
 
             // Value is OK

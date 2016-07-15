@@ -12,14 +12,14 @@ namespace AtomPie\System {
     use AtomPie\DependencyInjection\Exception;
     use AtomPie\System\Dispatch\ClientAnnotationValidator;
     use AtomPie\System\Dispatch\DispatchException;
-    use AtomPie\Core\Annotation\Tag\Client;
+    use AtomPie\AnnotationTag\Client;
     use AtomPie\Boundary\System\IAmDispatcher;
     use AtomPie\Boundary\System\IControlAccess;
     use AtomPie\System\Dispatch\DispatchAnnotationFetcher;
     use Generi\Boundary\IType;
     use AtomPie\Web\Boundary\IAmEnvironment;
     use AtomPie\Web\Boundary\IChangeRequest;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\EndPoint;
     use AtomPie\I18n\Label;
     use AtomPie\System\IO\File;
     use AtomPie\Web\Boundary\IChangeResponse;
@@ -32,6 +32,7 @@ namespace AtomPie\System {
      *
      * @version $Id$
      * @author Risto Kowaczewski
+     * @internal
      */
     class Dispatcher implements IAmDispatcher
     {
@@ -96,7 +97,7 @@ namespace AtomPie\System {
         private function setResponseHeaders(IChangeResponse $oResponse, $aAnnotations)
         {
 
-            /** @var \AtomPie\Core\Annotation\Tag\Header $oAnnotation */
+            /** @var \AtomPie\AnnotationTag\Header $oAnnotation */
             foreach ($aAnnotations as $oAnnotation) {
 
                 if (isset($oAnnotation->ContentType)) {
@@ -312,7 +313,8 @@ namespace AtomPie\System {
                 $oEndPointDependencyContainer,
                 $oEndPointObject,
                 $sFullEndPointClassName,
-                $sEndPointMethodName
+                $sEndPointMethodName,
+                $oConfig->getContractsFillers()
             );
 
         }
@@ -341,22 +343,23 @@ namespace AtomPie\System {
          * @param object $oEndPointClass
          * @param $sFullEndPointClassName
          * @param $sEndPointMethodName
+         * @param ContractFillers $oContactFillers
          * @return mixed $ReturnContent
-         * @throws DispatchException
-         * @throws \AtomPie\DependencyInjection\Exception
+         * @throws Exception
          */
         private function invokeEndPoint(
             $oEndPointDependencyContainer,
             $oEndPointClass = null,
             $sFullEndPointClassName,
-            $sEndPointMethodName
+            $sEndPointMethodName,
+            ContractFillers $oContactFillers = null
         ) {
 
             /////////////////////////////////////
             // Invoke EndPoint action
             // and return content
             
-            $oDependencyInjector = new DependencyInjector($oEndPointDependencyContainer);
+            $oDependencyInjector = new DependencyInjector($oEndPointDependencyContainer, $oContactFillers);
             $mContentReturnedByEndPoint = $oDependencyInjector->invokeMethod(
                 is_object($oEndPointClass)
                     ? $oEndPointClass           // object method
@@ -485,7 +488,7 @@ namespace AtomPie\System {
 
         /**
          * @param IChangeRequest $oRequest
-         * @param Client $oClientAnnotation
+         * @param \AtomPie\AnnotationTag\Client $oClientAnnotation
          * @return mixed
          */
         private function validateClient(

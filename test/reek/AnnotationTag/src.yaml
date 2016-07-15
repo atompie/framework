@@ -1,0 +1,7 @@
+src/AtomPie/AnnotationTag:
+  Allow:
+    - Generi #package
+    - AtomPie.I18n #package
+    - AtomPie.AnnotationTag #self
+    - parent
+    - Iterator

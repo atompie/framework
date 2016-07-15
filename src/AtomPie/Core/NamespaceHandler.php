@@ -84,10 +84,6 @@ namespace AtomPie\Core {
                     if (class_exists($sClass)) {
                         return $sClass;
                     }
-//                list($sClass,$sClassNamespace) = $this->mergeNamespaceToClass($sNamespace ,$sClassName);
-//                if(class_exists($sClass)) {
-//                    return $sClass;
-//                }
                 }
             }
             return null;

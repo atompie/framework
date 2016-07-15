@@ -15,13 +15,13 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
 
     public function testIncorrectHeaderValue()
     {
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         new Header(Header::CONTENT_TYPE, array('text/html'));
     }
 
     public function testIncorrectHeaderName()
     {
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         new Header(array(Header::CONTENT_TYPE), 'text/html');
     }
 }

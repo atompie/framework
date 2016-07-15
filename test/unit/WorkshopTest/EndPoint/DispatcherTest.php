@@ -108,7 +108,7 @@ namespace WorkshopTest\EndPoint {
                 $oConfig
             );
 
-            $this->setExpectedException(DispatchException::class);
+            $this->expectException(DispatchException::class);
             $oApplication->run($oConfig);
         }
 
@@ -121,7 +121,7 @@ namespace WorkshopTest\EndPoint {
                 $oConfig
             );
 
-            $this->setExpectedException(DispatchException::class);
+            $this->expectException(DispatchException::class);
             $oApplication->run($oConfig);
 
         }
@@ -135,7 +135,7 @@ namespace WorkshopTest\EndPoint {
                 $oConfig
             );
 
-            $this->setExpectedException(DispatchException::class);
+            $this->expectException(DispatchException::class);
             $oResponse = $oApplication->run($oConfig);
             $this->assertTrue($oResponse->getContent()->getContentLength() == 0);
             $this->assertTrue($oResponse->getContent()->get() == null);
@@ -143,7 +143,7 @@ namespace WorkshopTest\EndPoint {
 
         public function testDispatcher_EndPoint_EmptyAction()
         {
-            $this->setExpectedException(EndPointException::class);
+            $this->expectException(EndPointException::class);
 
             $oConfig = Config::get();
             $oApplication = $this->getApp(
@@ -236,7 +236,7 @@ namespace WorkshopTest\EndPoint {
                 $oConfig
             );
 
-            $this->setExpectedException(DispatchException::class);
+            $this->expectException(DispatchException::class);
             $oApplication->run($oConfig);
 
         }
@@ -431,7 +431,7 @@ namespace WorkshopTest\EndPoint {
                 $oConfig
             );
 
-            $this->setExpectedException(DispatchException::class);
+            $this->expectException(DispatchException::class);
             $oApplication->run($oConfig);
         }
 

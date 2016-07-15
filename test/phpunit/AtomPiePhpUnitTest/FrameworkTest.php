@@ -2,8 +2,9 @@
 namespace AtomPiePhpUnitTest {
 
     use AtomPie\Core\FrameworkConfig;
+    use AtomPie\System\EndPointConfig;
     use AtomPie\System\Kernel;
-    use AtomPie\System\Router;
+    use AtomPie\System\Namespaces;
     use AtomPie\Web\Environment;
 
     class FrameworkTest extends \PHPUnit_Framework_TestCase
@@ -11,42 +12,45 @@ namespace AtomPiePhpUnitTest {
 
         /**
          * @param $oConfig
-         * @param array $aContentProcessors
-         * @param array $aMiddleware
          * @return \AtomPie\Web\Connection\Http\Response
          */
-        protected function bootKernel($oConfig, array $aContentProcessors, array $aMiddleware)
+        protected function bootKernel($oConfig)
         {
 
             $oEnvironment = Environment::resetInstance();
 
-            $oKernel = new Kernel($oConfig, $oEnvironment, $aMiddleware);
-            return $oKernel->boot(
-                $aContentProcessors
-            );
+            $oKernel = new Kernel($oEnvironment);
+            return $oKernel->boot($oConfig);
         }
 
         /**
          * @param $sDefaultEndPoint
-         * @return \AtomPie\Core\FrameworkConfig
+         * @param array $aContractFillers
+         * @param array $aMiddleware
+         * @param array $aContentProcessors
+         * @return FrameworkConfig
          */
-        protected function getDefaultConfig($sDefaultEndPoint)
+        protected function getDefaultConfig(
+            $sDefaultEndPoint, 
+            array $aContractFillers = [],
+            array $aMiddleware = [], 
+            array $aContentProcessors = [])
         {
             $oEnvironment = Environment::getInstance();
-            
+
             $oConfig = new FrameworkConfig(
-                $oEnvironment, 
-                new Router(__DIR__.'/../AtomPieTestAssets/Routing/Routing.php'),
-                new ApplicationConfigDefinition($oEnvironment->getEnv()),
-                __DIR__,
-                __DIR__ . '/../AtomPieTestAssets/Resource/Theme',
-                [],
-                [],
-                [
-                    '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
-                ],
-                [],
-                $sDefaultEndPoint
+                $sDefaultEndPoint,
+                new EndPointConfig(
+                    new Namespaces(),
+                    new Namespaces([
+                        '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
+                    ])
+                ),
+                new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+                $oEnvironment,
+                $aContractFillers,
+                $aMiddleware,
+                $aContentProcessors
             );
             return $oConfig;
         }

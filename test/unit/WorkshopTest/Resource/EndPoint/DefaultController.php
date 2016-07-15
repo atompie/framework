@@ -4,16 +4,16 @@ namespace WorkshopTest\Resource\EndPoint {
     require_once __DIR__ . '/../Page/DefaultPage.php';
     require_once __DIR__ . '/../Page/NotPage.php';
 
+    use AtomPie\AnnotationTag\SaveState;
     use Generi\Object;
     use AtomPie\Boundary\Core\IAmService;
-    use AtomPie\Core\Annotation\Tag\Client;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Core\Annotation\Tag\Documentation;
-    use AtomPie\Core\Annotation\Tag\EndPointParam;
-    use AtomPie\Core\Annotation\Tag\Header;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
-    use AtomPie\Core\Annotation\Tag\SaveState;
-    use Workshop\FrontEnd\Param\Integer;
+    use AtomPie\AnnotationTag\Client;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Documentation;
+    use AtomPie\AnnotationTag\EndPointParam;
+    use AtomPie\AnnotationTag\Header;
+    use AtomPie\AnnotationTag\Template;
+    use Workshop\FrontEnd\Param\IntegerNumber;
     use AtomPie\Web\Connection\Http\Url\Param;
     use WorkshopTest\Resource\Component\Yes;
     use WorkshopTest\Resource\Page\DefaultPage;
@@ -83,8 +83,7 @@ namespace WorkshopTest\Resource\EndPoint {
 
         /**
          * @return DefaultPage
-         * @Header(ContentType="application/json")
-         * @EndPoint()
+         * @EndPoint(ContentType="application/json")
          */
         public function JsonContentType()
         {
@@ -126,11 +125,12 @@ namespace WorkshopTest\Resource\EndPoint {
          * @Documentation(Name="File",File="WorkshopTest/Resource/EndPoint/DefaultController.php")
          *
          * @param Param $Id
-         * @param Integer $Integer
+         * @param IntegerNumber $Integer
          * @param IAmService $oService
          */
-        public function notEndPoint(Param $Id = null, Integer $Integer, IAmService $oService = null)
+        public function notEndPoint(Param $Id = null, IntegerNumber $Integer, IAmService $oService = null)
         {
+            
         }
     }
 

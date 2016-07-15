@@ -66,6 +66,7 @@ namespace AtomPie\System {
             if (isset($this->oDependencyContainer)) {
                 return $this->oDependencyContainer;
             } else {
+                /** @noinspection PhpInternalEntityUsedInspection */
                 return new DependencyContainer();
             }
         }

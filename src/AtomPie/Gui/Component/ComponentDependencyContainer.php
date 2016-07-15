@@ -28,13 +28,13 @@ namespace AtomPie\Gui\Component {
          * DependencyContainer constructor.
          * @param IAmEnvironment $oEnvironment
          * @param IAmDispatchManifest $oDispatchManifest
-         * @param IPersistParamState $oStatePersister
+         * @param IPersistParamState $oStateSaver
          * @throws \AtomPie\DependencyInjection\Exception
          */
         public function __construct(
             IAmEnvironment $oEnvironment,
             IAmDispatchManifest $oDispatchManifest,
-            IPersistParamState $oStatePersister
+            IPersistParamState $oStateSaver
         ) {
 
             $oSession = $oEnvironment->getSession();
@@ -66,11 +66,11 @@ namespace AtomPie\Gui\Component {
                     // ComponentParam. Not accessible when static EndPoint is called
                     IAmComponentParam::class =>
                         function (IAmDependencyMetaData $oMeta)
-                        use ($oRequest, $oStatePersister) {
+                        use ($oRequest, $oStateSaver) {
                             return ComponentDependencyFactory::factoryComponentRequestParam(
                                 $oMeta,
                                 $oRequest,
-                                $oStatePersister
+                                $oStateSaver
                             );
                         },
                     Param::class => function (IAmDependencyMetaData $oMeta) use (
@@ -128,11 +128,11 @@ namespace AtomPie\Gui\Component {
                     // ComponentParam. Not accessible when static EndPoint is called
                     IAmComponentParam::class =>
                         function (IAmDependencyMetaData $oMeta)
-                        use ($oRequest, $oStatePersister) {
+                        use ($oRequest, $oStateSaver) {
                             return ComponentDependencyFactory::factoryComponentRequestParam(
                                 $oMeta,
                                 $oRequest,
-                                $oStatePersister
+                                $oStateSaver
                             );
                         },
                     Param::class => function (IAmDependencyMetaData $oMeta) use (

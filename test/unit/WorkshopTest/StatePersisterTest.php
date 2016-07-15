@@ -8,11 +8,12 @@ require_once __DIR__ . '/../Config.php';
 use AtomPie\Core\FrameworkConfig;
 use AtomPie\Core\Dispatch\DispatchManifest;
 use AtomPie\Core\Dispatch\EndPointImmutable;
-use AtomPie\System\Router;
+use AtomPie\System\EndPointConfig;
+use AtomPie\System\Namespaces;
 use AtomPie\Web\Environment;
 use AtomPie\Web\Session\ParamStatePersister;
 use AtomPie\Web\Connection\Http\Url\Param;
-use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 use WorkshopTest\Resource\Config\Config;
 
 class StatePersisterTest extends \PHPUnit_Framework_TestCase
@@ -181,10 +182,10 @@ class StatePersisterTest extends \PHPUnit_Framework_TestCase
     {
         $oEnvironment = Environment::getInstance();
         return new FrameworkConfig(
-            $oEnvironment,
-            new Router(__DIR__ . '/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__,
-            __DIR__);
+            'Main',
+            new EndPointConfig(new Namespaces()),
+            new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+            $oEnvironment
+        );
     }
 }

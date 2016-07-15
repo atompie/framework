@@ -2,7 +2,7 @@ src/AtomPie/Core:
   Description: Sprawdza czy Core nie ma dostępu do innych packagy
   Allow:
     - AtomPie.Boundary.Core
-    - AtomPie.Core
+    - AtomPie.Core #self
     - parent
     - Generi # Package
     - Workshop.Web # Package

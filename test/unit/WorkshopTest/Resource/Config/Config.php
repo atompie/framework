@@ -2,9 +2,13 @@
 namespace WorkshopTest\Resource\Config {
 
     use AtomPie\Core\FrameworkConfig;
-    use AtomPie\System\Router;
+    use AtomPie\File\FileProcessorProvider;
+    use AtomPie\Gui\Component\ComponentProcessorProvider;
+    use AtomPie\System\EndPointConfig;
+    use AtomPie\System\EventConfig;
+    use AtomPie\System\Namespaces;
     use AtomPie\Web\Environment;
-    use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+    use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
     class Config
     {
@@ -12,27 +16,37 @@ namespace WorkshopTest\Resource\Config {
         public static function get()
         {
             $oEnvironment = Environment::getInstance();
+            $sViewFolder = __DIR__ . '/../../../WorkshopTest/Resource/Theme';
+            
             return new FrameworkConfig(
-                $oEnvironment,
-                new Router(__DIR__.'/../../Routing/Routing.php'),
-                new ApplicationConfigDefinition($oEnvironment->getEnv()),
-                __DIR__ . '/../../../',
-                __DIR__ . '/../../../WorkshopTest/Resource/Theme',
-                [
-                    "\\WorkshopTest\\Resource\\EndPoint",
-                    "\\WorkshopTest\\Resource\\Component",
-                    'WorkshopTest\Resource\Operation',
+                'Main',
+                new EndPointConfig(
+                    new Namespaces([
+                        "\\WorkshopTest\\Resource\\EndPoint",
+                        "\\WorkshopTest\\Resource\\Component",
+                        'WorkshopTest\Resource\Operation',
+                    ]),
+                    new Namespaces([
+                        'Test1\\Class4',
+                        "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
+                    ])
+                ),
+                new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+                $oEnvironment
+                , []
+                , []
+                , [
+                    new FileProcessorProvider(),
+                    new ComponentProcessorProvider($sViewFolder, $oEnvironment)
                 ],
-                [
-                    "\\WorkshopTest\\Resource\\Component",
-                    "\\WorkshopTest\\Resource",
-                    "\\WorkshopTest\\Resource\\EndPoint",
-                ],
-                [
-                    'Test1\\Class4',
-                    "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
-                ],
-                []
+                null,
+                new EventConfig(
+                    new Namespaces([
+                        "\\WorkshopTest\\Resource\\Component",
+                        "\\WorkshopTest\\Resource",
+                        "\\WorkshopTest\\Resource\\EndPoint",
+                    ])
+                )
             );
         }
 

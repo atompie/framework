@@ -1,8 +1,8 @@
 <?php
 namespace AtomPiePhpUnitTest\Core;
 
-use AtomPie\Core\ApplicationConfig;
-use AtomPie\Core\Config\Exception;
+use AtomPie\Config\ApplicationConfig;
+use AtomPie\Config\Exception;
 use AtomPie\Boundary\System\IAmEnvVariable;
 use AtomPie\System\Environment\EnvVariable;
 

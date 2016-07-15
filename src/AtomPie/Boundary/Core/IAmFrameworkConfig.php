@@ -2,22 +2,34 @@
 namespace AtomPie\Boundary\Core;
 
 use AtomPie\Boundary\System\IAmRouter;
+use AtomPie\Boundary\System\IHandleException;
+use AtomPie\Boundary\System\IRunAfterMiddleware;
+use AtomPie\Boundary\System\IRunBeforeMiddleware;
+use AtomPie\System\ContractFillers;
 
 interface IAmFrameworkConfig
 {
 
     /**
-     * @param $sNamespace
-     * @return bool
+     * @return ISetUpContentProcessor[]
      */
-    public function hasEndPointNamespace($sNamespace);
+    public function getContentProcessors();
 
     /**
-     * @param $sNamespace
-     * @return void
+     * @return IHandleException
      */
-    public function prependEndPointNamespace($sNamespace);
+    public function getErrorHandler();
     
+    /**
+     * @return IRunAfterMiddleware[]|IRunBeforeMiddleware[]
+     */
+    public function getMiddleware();
+    
+    /**
+     * @return ContractFillers
+     */
+    public function getContractsFillers();
+        
     /**
      * @return array
      */
@@ -37,16 +49,6 @@ interface IAmFrameworkConfig
      * @return array
      */
     public function getEventClasses();
-
-    /**
-     * @return string
-     */
-    public function getRootFolder();
-
-    /**
-     * @return string
-     */
-    public function getViewFolder();
 
     /**
      * @return string

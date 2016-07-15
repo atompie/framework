@@ -2,7 +2,7 @@
 namespace WorkshopTest\Resource\Component;
 
 use AtomPie\Gui\Component;
-use AtomPie\Gui\Component\Annotation\Tag\Template;
+use AtomPie\AnnotationTag\Template;
 use AtomPie\Gui\Component\ComponentParam;
 use AtomPie\Html\Tag\Head;
 use AtomPie\Web\Connection\Http\Url\Param;

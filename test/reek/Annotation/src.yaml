@@ -1,9 +1,8 @@
 src/AtomPie/Annotation:
   Allow:
     - Generi #package
-    - AtomPie.Html #package
-    - AtomPie.I18n #package
     - AtomPie.Annotation #self
     - ReflectionFunctionAbstract
     - ReflectionClass
     - Iterator
+    - ArrayAccess

@@ -8,11 +8,13 @@ use AtomPie\Core\FrameworkConfig;
 use AtomPie\DependencyInjection\Dependency;
 use AtomPie\DependencyInjection\DependencyInjector;
 use AtomPie\DependencyInjection\Exception;
+use AtomPie\DependencyInjection\Exception as InjectionException;
 use AtomPie\System\DependencyContainer\EndPointDependencyContainer;
-use AtomPie\System\Router;
+use AtomPie\System\EndPointConfig;
+use AtomPie\System\Namespaces;
 use AtomPie\System\UrlProvider;
 use AtomPie\Web\Environment;
-use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
 /**
  * This is EndPoint
@@ -117,8 +119,61 @@ class ChildOfB0 extends B0
 
 }
 
+class C0
+{
+
+    static function __build()
+    {
+        return new C0;
+    }
+
+    static function __constrainBuild()
+    {
+        return [
+            AllowedEndPointForBuild::class
+        ];
+    }
+
+}
+
+class AllowedEndPointForBuild
+{
+    public function inject(C0 $c)
+    {
+
+    }
+}
+
+class NotAllowedEndPointForBuild
+{
+    public function inject(C0 $c)
+    {
+
+    }
+}
+
 class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @test
+     */
+    public function shouldThrowExceptionWhenInjectionOutsideConstrainedClass()
+    {
+        $oInjector = new DependencyInjector($this->getContainer());
+        $this->expectException(InjectionException::class);
+        $oInjector->invokeMethod(new NotAllowedEndPointForBuild, 'inject');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldInjectionBuilderWhenInsideConstrainedClass()
+    {
+        $oInjector = new DependencyInjector($this->getContainer());
+        $oInjector->invokeMethod(new AllowedEndPointForBuild, 'inject');
+    }
+
     /**
      * @test
      */
@@ -258,20 +313,17 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
     private function getContainer()
     {
         $oEnvironment = Environment::getInstance();
-        
+
         $oConfig = new FrameworkConfig(
-            $oEnvironment,
-            new Router(__DIR__ . '/../../AtomPieTestAssets/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__,
-            __DIR__ . '/../AtomPieTestAssets/Resource/Theme',
-            [],
-            [],
-            [
-                '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
-            ],
-            [],
-            'none'
+            'none',
+            new EndPointConfig(
+                new Namespaces(),
+                new Namespaces([
+                    '\AtomPieTestAssets\Resource\Mock\MockEndPoint'
+                ])
+            ),
+            new ApplicationConfigSwitcher($oEnvironment->getEnv()),
+            $oEnvironment
         );
         $oManifest = new DispatchManifest($oConfig, new EndPointImmutable('none.none'));
 

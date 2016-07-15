@@ -2,7 +2,7 @@
 namespace AtomPieTestAssets\Resource\Mock {
 
     use AtomPie\Gui\Component;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\EndPoint;
 
     /**
      * @property int Property1

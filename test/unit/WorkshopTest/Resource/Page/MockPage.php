@@ -1,7 +1,7 @@
 <?php
 namespace WorkshopTest\Resource\Page {
 
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
+    use AtomPie\AnnotationTag\Template;
     use AtomPie\Gui\Page;
     use WorkshopTest\Resource\Component\MockComponent4;
 

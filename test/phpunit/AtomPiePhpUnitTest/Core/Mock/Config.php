@@ -2,9 +2,11 @@
 namespace AtomPiePhpUnitTest\Core\Mock {
 
     use AtomPie\Core\FrameworkConfig;
-    use AtomPie\System\Router;
+    use AtomPie\System\EndPointConfig;
+    use AtomPie\System\EventConfig;
+    use AtomPie\System\Namespaces;
     use AtomPie\Web\Environment;
-    use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+    use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
     class Config
     {
@@ -12,29 +14,34 @@ namespace AtomPiePhpUnitTest\Core\Mock {
         public static function get()
         {
             $oEnvironment = Environment::getInstance();
-            
+
             return new FrameworkConfig(
+                'Main',
+                new EndPointConfig(
+                    new Namespaces([
+                        "\\WorkshopTest\\Resource\\EndPoint",
+                        "\\WorkshopTest\\Resource\\Component",
+                        'WorkshopTest\Resource\Operation'
+                    ]),
+                    new Namespaces([
+                        'Test1\\Class4',
+                        "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
+                    ])
+                ),
+                new ApplicationConfigSwitcher($oEnvironment->getEnv()),
                 $oEnvironment,
-                new Router(__DIR__.'/Routing.php'),
-                new ApplicationConfigDefinition($oEnvironment->getEnv()),
-                __DIR__ . '/../../../',
-                __DIR__ . '/../../../WorkshopTest/Resource/Theme',
-                [
-                    "\\WorkshopTest\\Resource\\EndPoint",
-                    "\\WorkshopTest\\Resource\\Component",
-                    'WorkshopTest\Resource\Operation'
-                ],
-                [
-                    "\\WorkshopTest\\Resource\\Component",
-                    "\\WorkshopTest\\Resource",
-                    "\\WorkshopTest\\Resource\\EndPoint",
-                    '\\AtomPiePhpUnitTest\\Core\\Mock'
-                ],
-                [
-                    'Test1\\Class4',
-                    "\\WorkshopTest\\Resource\\EndPoint\\DefaultController"
-                ],
-                []
+                [],
+                [],
+                [],
+                null,
+                new EventConfig(
+                    new Namespaces([
+                        "\\WorkshopTest\\Resource\\Component",
+                        "\\WorkshopTest\\Resource",
+                        "\\WorkshopTest\\Resource\\EndPoint",
+                        '\\AtomPiePhpUnitTest\\Core\\Mock'
+                    ])
+                )
             );
         }
 

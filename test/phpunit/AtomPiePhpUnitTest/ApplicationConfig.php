@@ -3,7 +3,7 @@ namespace AtomPiePhpUnitTest;
 
 use AtomPie\Boundary\System\IAmEnvVariable;
 
-class ApplicationConfig extends \AtomPie\Core\ApplicationConfig 
+class ApplicationConfig extends \AtomPie\Config\ApplicationConfig 
 {
     public function __construct(IAmEnvVariable $oEnv)
     {

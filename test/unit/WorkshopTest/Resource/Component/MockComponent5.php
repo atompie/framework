@@ -1,10 +1,10 @@
 <?php
 namespace WorkshopTest\Resource\Component {
 
-    use AtomPie\Core\Annotation\Tag\EndPointParam;
+    use AtomPie\AnnotationTag\EndPointParam;
     use AtomPie\Gui\Component;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\Template;
+    use AtomPie\AnnotationTag\EndPoint;
     use AtomPie\Web\Connection\Http\Url\Param;
 
     /**

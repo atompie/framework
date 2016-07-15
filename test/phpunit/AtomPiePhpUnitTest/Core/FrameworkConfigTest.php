@@ -2,10 +2,11 @@
 namespace AtomPiePhpUnitTest\Core;
 
 use AtomPie\Core\FrameworkConfig;
-use AtomPie\System\Router;
+use AtomPie\System\EndPointConfig;
+use AtomPie\System\Namespaces;
 use AtomPie\Web\Environment;
 use AtomPiePhpUnitTest\ApplicationConfig;
-use AtomPiePhpUnitTest\ApplicationConfigDefinition;
+use AtomPiePhpUnitTest\ApplicationConfigSwitcher;
 
 class FrameworkConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,16 +18,10 @@ class FrameworkConfigTest extends \PHPUnit_Framework_TestCase
         $oEnvironment = Environment::getInstance();
         
         $oConfig = new FrameworkConfig(
-            $oEnvironment,
-            new Router(__DIR__.'/../../AtomPieTestAssets/Routing/Routing.php'),
-            new ApplicationConfigDefinition($oEnvironment->getEnv()),
-            __DIR__,
-            __DIR__,
-            [],
-            [],
-            [],
-            [],
             'Main'
+            , new EndPointConfig(new Namespaces())
+            , new ApplicationConfigSwitcher($oEnvironment->getEnv())
+            , $oEnvironment
         );
 
         $oAppConfig = $oConfig->getAppConfig();

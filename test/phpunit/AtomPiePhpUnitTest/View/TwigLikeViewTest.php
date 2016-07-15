@@ -33,7 +33,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
             new TwigTemplateFile($sFolder . '/View2.twig')
         );
 
-        print($sView);
+//        print($sView);
     }
 
     public function testRenderTemplateWithArray2()
@@ -48,7 +48,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
             new TwigTemplateFile($sFolder . '/View5.twig')
         );
 
-        print($sView);
+//        print($sView);
     }
 
     public function testRenderTemplateWithObject1()
@@ -61,7 +61,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
             new TwigTemplateFile($sFolder . '/View4.twig')
         );
 
-        print($sView);
+//        print($sView);
 //		$this->assertTrue($sView == 'Details: Risto Kowaczewski');
     }
 
@@ -77,7 +77,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
         $sView = $oView->fillTemplate($oObject->getViewPlaceHolders(), $oFile->loadRaw());
 //		$this->assertTrue($sView == 'ul. Warszawska');
 
-        echo $sView;
+//        echo $sView;
     }
 
 
@@ -92,7 +92,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
         $sView = $oView->fillTemplate($oObject->getViewPlaceHolders(), $oFile->loadRaw());
 //		$this->assertTrue($sView == 'ul. Warszawska');
 
-        echo $sView;
+//        echo $sView;
     }
 
     public function testRenderTemplate_Block()
@@ -101,7 +101,7 @@ class TwigLikeViewTest extends \PHPUnit_Framework_TestCase
         $oFile = new TwigTemplateFile($sFolder . '/View3.twig');
 
         $oView = new TwigLikeView($sFolder);
-        echo $oView->renderTemplate(
+        $tmpl = $oView->renderTemplate(
             array(
                 'columns' => array(
                     new Details('Risto', 'Kowaczewski'),

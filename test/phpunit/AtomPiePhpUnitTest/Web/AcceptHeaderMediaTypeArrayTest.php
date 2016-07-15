@@ -3,6 +3,7 @@ namespace AtomPiePhpUnitTest\Web;
 
 use AtomPie\Web\Connection\Http\Header\AcceptMediaTypesArray;
 use AtomPie\Web\Connection\Http\Header;
+use AtomPie\Web\Exception;
 
 class AcceptHeaderMediaTypeArrayTest extends \PHPUnit_Framework_TestCase
 {
@@ -76,21 +77,21 @@ class AcceptHeaderMediaTypeArrayTest extends \PHPUnit_Framework_TestCase
     public function testIncorrectMediaType_Scenario1()
     {
         /** @var Header\MediaType[] | AcceptMediaTypesArray $oAcceptHeader */
-        $this->setExpectedException(\AtomPie\Web\Exception::class);
+        $this->expectException(Exception::class);
         new AcceptMediaTypesArray('text');
     }
 
     public function testIncorrectMediaType_Scenario2()
     {
         /** @var Header\MediaType[] | AcceptMediaTypesArray $oAcceptHeader */
-        $this->setExpectedException(\AtomPie\Web\Exception::class);
+        $this->expectException(Exception::class);
         new AcceptMediaTypesArray('text/html; text/plain');
     }
 
     public function testIncorrectMediaType_Scenario3()
     {
         /** @var Header\MediaType[] | AcceptMediaTypesArray $oAcceptHeader */
-        $this->setExpectedException(\AtomPie\Web\Exception::class);
+        $this->expectException(Exception::class);
         new AcceptMediaTypesArray('text; text/plain');
     }
 

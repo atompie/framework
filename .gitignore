@@ -1,5 +1,2 @@
-.idea
-.vagrant
-.tools
+# Created by .ignore support plugin (hsz.mobi)
 vendor
-composer.lock

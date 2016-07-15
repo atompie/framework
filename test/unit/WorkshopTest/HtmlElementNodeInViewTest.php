@@ -45,7 +45,7 @@ class HtmlElementNodeInViewTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($oPTag == '<p>a a</p>');
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oPTag->addInnerHtmlChild(new \stdClass());
     }
 

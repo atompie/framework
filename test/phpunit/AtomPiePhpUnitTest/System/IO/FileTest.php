@@ -77,15 +77,16 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $oFile = new File('/tmp/myfile.txt');
         $oFile->save('łóśćęńźą');
-        $this->assertTrue($oFile->getName() == 'myfile');
+        $this->assertEquals('myfile', $oFile->getName());
         $oFile->remove();
     }
 
     public function testFile_Permisstions()
     {
+        umask(0022);
         $oFile = new File('/tmp/myfile.txt');
         $oFile->save('łóśćęńźą');
-        $this->assertTrue($oFile->getUnixPermissions() == '-rw-rw-r--');
+        $this->assertEquals('-rw-r--r--', $oFile->getUnixPermissions());
         $oFile->remove();
     }
 
@@ -93,14 +94,14 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $oFile = new File('/tmp/myfile.txt');
         $oFile->save('łóśćęńźą');
-        $this->assertTrue($oFile->getPath() == '/tmp/myfile.txt');
-        $this->assertTrue($oFile->getSize() == 16); // UTF-8
+        $this->assertEquals('/tmp/myfile.txt', $oFile->getPath());
+        $this->assertEquals(16, $oFile->getSize()); // UTF-8
         $oFile->remove();
 
         $oFile = new File('/tmp/myfile.txt');
         $oFile->save('12345');
-        $this->assertTrue($oFile->getPath() == '/tmp/myfile.txt');
-        $this->assertTrue($oFile->getSize() == 5); // Not-UTF-8
+        $this->assertEquals('/tmp/myfile.txt', $oFile->getPath());
+        $this->assertEquals(5, $oFile->getSize()); // Not-UTF-8
         $oFile->remove();
     }
 
@@ -108,8 +109,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $oFile = new File('/tmp/myfile.txt');
         $oFile->save('łóśćęńźą');
-        $this->assertTrue($oFile->getOwner() == @fileowner('/tmp/myfile.txt'));
-        $this->assertTrue($oFile->getGroup() == @filegroup('/tmp/myfile.txt'));
+        $this->assertEquals(@fileowner('/tmp/myfile.txt'), $oFile->getOwner());
+        $this->assertEquals(@filegroup('/tmp/myfile.txt'), $oFile->getGroup());
         $oFile->remove();
     }
 

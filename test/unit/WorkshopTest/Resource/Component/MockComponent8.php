@@ -2,9 +2,9 @@
 namespace WorkshopTest\Resource\Component {
 
     use AtomPie\Gui\Component;
-    use AtomPie\Core\Annotation\Tag\Client;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
+    use AtomPie\AnnotationTag\Client;
+    use AtomPie\AnnotationTag\EndPoint;
+    use AtomPie\AnnotationTag\Template;
 
     /**
      * Class MockComponent1

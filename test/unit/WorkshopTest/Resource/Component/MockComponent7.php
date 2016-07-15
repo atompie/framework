@@ -8,10 +8,10 @@ namespace WorkshopTest\Resource\Component {
     use AtomPie\Gui\Component;
     use AtomPie\Html\ScriptsCollection;
     use AtomPie\Html\Tag\Head;
-    use AtomPie\Core\Annotation\Tag\EndPoint;
+    use AtomPie\AnnotationTag\EndPoint;
     use AtomPie\Web\Connection\Http\Content;
     use AtomPie\Web\Connection\Http\Url\Param;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
+    use AtomPie\AnnotationTag\Template;
 
     /**
      * @Template(File="MockComponent7.mustache")
@@ -27,6 +27,7 @@ namespace WorkshopTest\Resource\Component {
         public $Environment;
 
         public function __create(
+            /** @noinspection PhpUnusedParameterInspection */
             Component\ComponentParam $ComponentParam,
             Param $Param,
             Head $Head,
@@ -40,6 +41,7 @@ namespace WorkshopTest\Resource\Component {
         }
 
         public function __factory(
+            /** @noinspection PhpUnusedParameterInspection */
             Component $Component,
             Component\ComponentParam $ComponentParam,
             Param $Param,

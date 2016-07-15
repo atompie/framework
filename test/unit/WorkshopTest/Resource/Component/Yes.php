@@ -2,7 +2,7 @@
 namespace WorkshopTest\Resource\Component {
 
     use AtomPie\Gui\Component;
-    use AtomPie\Gui\Component\Annotation\Tag\Template;
+    use AtomPie\AnnotationTag\Template;
 
     /**
      * Class Yes

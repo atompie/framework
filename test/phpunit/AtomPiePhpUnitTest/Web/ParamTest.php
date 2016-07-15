@@ -24,7 +24,7 @@ class ParamTest extends \PHPUnit_Framework_TestCase
 
     public function testParam_Constrains()
     {
-        $this->setExpectedException(Param\ParamException::class);
+        $this->expectException(Param\ParamException::class);
         new MyConstrainedParamTest('MyConstrainedParamTest', 'text&text');
     }
 
@@ -49,7 +49,7 @@ class ParamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($oParam['b']));
         unset($oParam['b']);
         $this->assertTrue(!isset($oParam['b']));
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oParam['c'] = 3;
         $this->assertTrue(!isset($oParam['c']));
     }
@@ -57,7 +57,7 @@ class ParamTest extends \PHPUnit_Framework_TestCase
     public function testParam_ArrayAccess_NoArray()
     {
         $oParam = new Param('Param', 1);
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         $oParam['a'];
     }
 

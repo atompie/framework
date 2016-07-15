@@ -3,7 +3,6 @@ namespace WorkshopTest;
 
 require_once __DIR__ . '/../Config.php';
 
-use AtomPie\Web\Environment;
 use AtomPie\Web\Connection\Http\Header;
 use AtomPie\Web\Connection\Http\Request;
 
