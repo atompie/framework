@@ -10,7 +10,7 @@ Use composer to install sample project
 
 To install sample project type:
 
-> php composer.phar create-project --stability=dev --prefer-dist atompie/project
+> php composer.phar create-project --stability=dev --prefer-dist atompie/project-scaffold
 
 Framework for framework agnostic programmers
 ============================================
